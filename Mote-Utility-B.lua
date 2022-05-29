@@ -169,46 +169,44 @@ function refine_waltz(spell, action, spellMap, eventArgs)
     -- If we have an estimated missing HP value, we can adjust the preferred tier used.
     if missingHP ~= nil then
         if player.main_job == 'DNC' then
-            dnc_level = player.main_job_level
             if missingHP < 40 and spell.target.name == player.name then
                 -- Not worth curing yourself for so little.
                 -- Don't block when curing others to allow for waking them up.
                 add_to_chat(122,'Full HP!')
                 eventArgs.cancel = true
                 return
-            elseif missingHP >= 1500 and dnc_level >= 87 then
-                newWaltz = 'Curing Waltz V'
-                waltzID = 311
-            elseif missingHP >= 1100 and dnc_level >= 70 then
+            elseif missingHP < 200 then
+                newWaltz = 'Curing Waltz'
+                waltzID = 190
+            elseif missingHP < 600 then
+                newWaltz = 'Curing Waltz II'
+                waltzID = 191
+            elseif missingHP < 1100 then
+                newWaltz = 'Curing Waltz III'
+                waltzID = 192
+            elseif missingHP < 1500 then
                 newWaltz = 'Curing Waltz IV'
                 waltzID = 193
-            elseif missingHP >= 600 and dnc_level >= 45  then
-                newWaltz = 'Curing Waltz III'
-                waltzID = 192
-            elseif missingHP >= 200 and dnc_level >= 30 then
-                newWaltz = 'Curing Waltz II'
-                waltzID = 191
             else
-                newWaltz = 'Curing Waltz'
-                waltzID = 190
+                newWaltz = 'Curing Waltz V'
+                waltzID = 311
             end
         elseif player.sub_job == 'DNC' then
-            dnc_level = player.sub_job_level
             if missingHP < 40 and spell.target.name == player.name then
                 -- Not worth curing yourself for so little.
                 -- Don't block when curing others to allow for waking them up.
                 add_to_chat(122,'Full HP!')
                 eventArgs.cancel = true
                 return
-            elseif missingHP >= 300 and dnc_level >= 45 then
-                newWaltz = 'Curing Waltz III'
-                waltzID = 192
-            elseif missingHP >= 150 and dnc_level >= 30 then
+            elseif missingHP < 150 then
+                newWaltz = 'Curing Waltz'
+                waltzID = 190
+            elseif missingHP < 300 then
                 newWaltz = 'Curing Waltz II'
                 waltzID = 191
             else
-                newWaltz = 'Curing Waltz'
-                waltzID = 190
+                newWaltz = 'Curing Waltz III'
+                waltzID = 192
             end
         else
             -- Not dnc main or sub; bail out
@@ -453,10 +451,10 @@ function set_elemental_obi_cape_ring(spell)
     gear.ElementalObi.name = obi_name or gear.default.obi_waist  or ""
     
     if obi_name then
-        if player.inventory['Twilight Cape'] or player.wardrobe['Twilight Cape'] then
+        if player.inventory['Twilight Cape'] or player.wardrobe['Twilight Cape'] or player.wardrobe2['Twilight Cape'] or player.wardrobe3['Twilight Cape'] or player.wardrobe4['Twilight Cape'] then
             gear.ElementalCape.name = "Twilight Cape"
         end
-        if (player.inventory['Zodiac Ring'] or player.wardrobe['Zodiac Ring']) and spell.english ~= 'Impact' and
+        if (player.inventory['Zodiac Ring'] or player.wardrobe['Zodiac Ring'] or player.wardrobe2['Zodiac Ring'] or player.wardrobe3['Zodiac Ring'] or player.wardrobe4['Zodiac Ring']) and spell.english ~= 'Impact' and
             not S{'Divine Magic','Dark Magic','Healing Magic'}:contains(spell.skill) then
             gear.ElementalRing.name = "Zodiac Ring"
         end
@@ -499,7 +497,7 @@ function get_elemental_item_name(item_type, valid_elements, restricted_to_elemen
     local item_map = elements[item_type:lower()..'_of']
     
     for element in (potential_elements.it or it)(potential_elements) do
-        if valid_elements:contains(element) and (player.inventory[item_map[element]] or player.wardrobe[item_map[element]]) then
+        if valid_elements:contains(element) and (player.inventory[item_map[element]] or player.wardrobe[item_map[element]] or player.wardrobe2[item_map[element]]) then
             return item_map[element]
         end
     end
@@ -525,11 +523,11 @@ function set_macro_page(set,book)
             add_to_chat(123,'Error setting macro page: book is not a valid number ('..tostring(book)..').')
             return
         end
-        if book < 1 or book > 20 then
+        if book < 1 or book > 40 then
             add_to_chat(123,'Error setting macro page: Macro book ('..tostring(book)..') must be between 1 and 20.')
             return
         end
-        send_command('@input /macro book '..tostring(book)..';wait .1;input /macro set '..tostring(set))
+        send_command('@input /macro book '..tostring(book)..';wait 1.1;input /macro set '..tostring(set))
     else
         send_command('@input /macro set '..tostring(set))
     end
@@ -608,6 +606,20 @@ function invert_table(t)
         i[v] = k
     end
     return i
+end
+
+-- Invert a special table containing values which are lists such that the keys are the list items and the values are the keys.
+function invert_mapping_table(t)
+    if t == nil then error('Attempting to invert table, received nil.', 2) end
+    
+    local result={}
+    for k,l in pairs(t) do 
+        for i,_ in pairs(l) do
+            result[i] = k
+        end
+    end
+
+    return result
 end
 
 

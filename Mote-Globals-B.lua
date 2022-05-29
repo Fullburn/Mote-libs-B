@@ -25,8 +25,6 @@ function define_global_sets()
 	
 	-- Dark Rings
 	gear.DarkRing = {}
-	gear.DarkRing.physical = {name="Dark Ring",augments={'Magic dmg. taken -3%','Spell interruption rate down -5%','Phys. dmg. taken -6%'}}
-	gear.DarkRing.magical = {name="Dark Ring", augments={'Magic dmg. taken -6%','Breath dmg. taken -5%'}}
 	
 	-- Default items for utility gear values.
 	gear.default.weaponskill_neck = "Asperity Necklace"
@@ -36,6 +34,20 @@ function define_global_sets()
 	gear.default.obi_ring = "Strendu Ring"
 	gear.default.fastcast_staff = ""
 	gear.default.recast_staff = ""
+
+    gear.Moonshade = { name="Moonshade Earring", augments={'Accuracy+4','TP Bonus +250',}}
+
+    gear.AdhemarJacket = {}
+	gear.AdhemarJacket.Attack = { name="Adhemar Jacket +1", augments={'STR+12','DEX+12','Attack+20',}}
+
+    gear.AdhemarWrists = {}
+	gear.AdhemarWrists.Attack = { name="Adhemar Wrist. +1", augments = {'STR+12','DEX+12','Attack+20',} }
+
+    gear.HerculeanFeet = {}
+    gear.HerculeanFeet.TH = {name="Herculean Boots", augments={'"Avatar perpetuation cost" -1','Accuracy+9','"Treasure Hunter"+1','Mag. Acc.+2 "Mag.Atk.Bns."+2',}}
+
+	-- Definitions for global functionality
+	info.Incapacitated = S{ "terror", "petrification", "sleep", "stun"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -45,21 +57,39 @@ end
 
 -- Function to bind GearSwap binds when loading a GS script.
 function global_on_load()
-	send_command('bind f9 gs c cycle OffenseMode')
-	send_command('bind ^f9 gs c cycle HybridMode')
-	send_command('bind !f9 gs c cycle RangedMode')
-	send_command('bind @f9 gs c cycle WeaponskillMode')
-	send_command('bind f10 gs c set DefenseMode Physical')
-	send_command('bind ^f10 gs c cycle PhysicalDefenseMode')
-	send_command('bind !f10 gs c toggle Kiting')
-	send_command('bind f11 gs c set DefenseMode Magical')
-	send_command('bind ^f11 gs c cycle CastingMode')
-	send_command('bind f12 gs c update user')
-	send_command('bind ^f12 gs c cycle IdleMode')
-	send_command('bind !f12 gs c reset DefenseMode')
+    -- ^ stands for the Ctrl key.
+	-- ! stands for the Alt key. 
+    -- @ stands for the Windows key.
 
-	send_command('bind ^- gs c toggle selectnpctargets')
-	send_command('bind ^= gs c cycle pctargetmode')
+	-- F9 manages defense
+	send_command('bind f9 gs c cycle DefenseLevel')
+	send_command('bind ^f9 gs c cycle DefenseMode')
+	send_command('bind !f9 gs c toggle Kiting')
+
+	-- F10 manages offense
+	send_command('bind f10 gs c cycle WeaponsMode')
+	send_command('bind ^f10 gs c cycle OffenseMode')
+    send_command('bind !f10 gs c cycle WeaponskillMode')
+
+	-- F11 manages job-specific toggles (found in job-specific files)
+
+	-- F12 manages debug info and gear lock
+    send_command('bind f12 gs c lockGear') -- Locks idle/engage to current gear until disabled.
+	send_command('bind ^f12 gs c cycle EquipStop')
+	send_command('bind !f12 gs c update user')
+
+    send_command('bind !, fillmode 1')
+    send_command('bind !. fillmode 0')
+
+    send_command('bind !e input /item "Echo Drops" <me>')
+    send_command('bind !r input /item "Remedy" <me>')
+    send_command('bind !p input /item "Panacea" <me>')
+    send_command('bind !h input /item "Holy Water" <me>')
+    send_command('bind !w input /equip ring2 "Warp Ring"; /echo Warping; wait 11; input /item "Warp Ring" <me>;')
+    send_command('bind !q input /equip ring2 "Dim. Ring (Dem)"; /echo Reisenjima; wait 11; input /item "Dim. Ring (Dem)" <me>;')
+
+	-- send_command('bind ^- gs c toggle selectnpctargets')
+	-- send_command('bind ^= gs c cycle pctargetmode')
 end
 
 -- Function to revert binds when unloading.
@@ -67,24 +97,34 @@ function global_on_unload()
 	send_command('unbind f9')
 	send_command('unbind ^f9')
 	send_command('unbind !f9')
-	send_command('unbind @f9')
 	send_command('unbind f10')
 	send_command('unbind ^f10')
 	send_command('unbind !f10')
-	send_command('unbind f11')
-	send_command('unbind ^f11')
-	send_command('unbind !f11')
 	send_command('unbind f12')
 	send_command('unbind ^f12')
 	send_command('unbind !f12')
 
-	send_command('unbind ^-')
-	send_command('unbind ^=')
+	send_command('unbind !,')
+	send_command('unbind !.')
+	send_command('unbind !e')
+	send_command('unbind !r')
+	send_command('unbind !p')
+	send_command('unbind !h')
+	send_command('unbind !w')
+	send_command('unbind !q')
 end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Global event-handling functions.
 -------------------------------------------------------------------------------------------------------------------
+
+function user_handle_equipping_gear (playerStatus, eventArgs)
+	-- Always put defense set on if unable to act, even if defense mode isn't on.
+	if has_any_buff_of(info.Incapacitated) then
+		equip(apply_defense({}))
+		eventArgs.handled = true
+	end
+end
 
 -- Global intercept on precast.
 function user_precast(spell, action, spellMap, eventArgs)
@@ -102,13 +142,20 @@ end
 
 -- Global intercept on buff change.
 function user_buff_change(buff, gain, eventArgs)
+    local name = string.lower(buff)
+
 	-- Create a timer when we gain weakness.  Remove it when weakness is gone.
-	if buff:lower() == 'weakness' then
+	if name == 'weakness' then
 		if gain then
 			send_command('timers create "Weakness" 300 up abilities/00255.png')
 		else
 			send_command('timers delete "Weakness"')
 		end
+	end
+
+	if not midaction() and info.Incapacitated:contains(name) then
+		handle_equipping_gear(player.status)
+		eventArgs.handled = true
 	end
 end
 

@@ -25,32 +25,35 @@
 -- Auto-initialize after defining this function.
 -------------------------------------------------------------------------------------------------------------------
 
-current_mote_include_version = 2
+current_mote_include_version = 3
 
-function init_include()
-    -- Used to define various types of data mappings.  These may be used in the initialization, so load it up front.
-    include('Mote-Mappings')
-    
+function init_include()    
     -- Modes is the include for a mode-tracking variable class.  Used for state vars, below.
     include('Modes')
+
+    -- Used to define misc utility functions that may be useful for this include or any job files.
+    include('Mote-Utility-B')
+
+    -- Used to define various types of data mappings.  These may be used in the initialization, so load it up front.
+    include('Mote-Mappings-B')
 
     -- Var for tracking state values
     state = {}
 
-    -- General melee offense/defense modes, allowing for hybrid set builds, as well as idle/resting/weaponskill.
+    -- General melee offense/defense modes, as well as idle/resting/weaponskill.
     -- This just defines the vars and sets the descriptions.  List modes with no values automatically
     -- get assigned a 'Normal' default value.
+    state.WeaponsMode         = M{['description'] = 'Weapons Mode'}
     state.OffenseMode         = M{['description'] = 'Offense Mode'}
-    state.HybridMode          = M{['description'] = 'Hybrid Mode'}
     state.RangedMode          = M{['description'] = 'Ranged Mode'}
     state.WeaponskillMode     = M{['description'] = 'Weaponskill Mode'}
     state.CastingMode         = M{['description'] = 'Casting Mode'}
     state.IdleMode            = M{['description'] = 'Idle Mode'}
     state.RestingMode         = M{['description'] = 'Resting Mode'}
 
-    state.DefenseMode         = M{['description'] = 'Defense Mode', 'None', 'Physical', 'Magical'}
-    state.PhysicalDefenseMode = M{['description'] = 'Physical Defense Mode', 'PDT'}
-    state.MagicalDefenseMode  = M{['description'] = 'Magical Defense Mode', 'MDT'}
+    -- New Defense cycling mechanism
+    state.DefenseLevel        = M{['description'] = 'Defense Level', 'Off', 'EngagedOnly', 'On', 'PlusCasting', 'Fulltime'}
+    state.DefenseMode         = M{['description'] = 'Defense Mode', 'Physical', 'Magical'}
 
     state.Kiting              = M(false, 'Kiting')
     state.SelectNPCTargets    = M(false, 'Select NPC Targets')
@@ -62,7 +65,6 @@ function init_include()
     state.CombatForm          = M{['description']='Combat Form', ['string']=''}
 
     -- Non-mode vars that are used for state tracking.
-    state.MaxWeaponskillDistance = 0
     state.Buff = {}
 
     -- Classes describe a 'type' of action.  They are similar to state, but
@@ -70,7 +72,7 @@ function init_include()
     classes = {}
     -- Basic spell mappings are based on common spell series.
     -- EG: 'Cure' for Cure, Cure II, Cure III, Cure IV, Cure V, or Cure VI.
-    classes.SpellMaps = spell_maps
+    classes.SpellMaps = invert_mapping_table(spell_maps)
     -- List of spells and spell maps that don't benefit from greater skill (though
     -- they may benefit from spell-specific augments, such as improved regen or refresh).
     -- Spells that fall under this category will be skipped when searching for
@@ -91,7 +93,6 @@ function init_include()
     -- Class variables for time-based flags
     classes.Daytime = false
     classes.DuskToDawn = false
-
 
     -- Var for tracking misc info
     info = {}
@@ -119,6 +120,7 @@ function init_include()
     sets.midcast.Pet = {}
     sets.idle = {}
     sets.resting = {}
+    sets.weapons = {}
     sets.engaged = {}
     sets.defense = {}
     sets.buff = {}
@@ -137,16 +139,13 @@ function init_include()
 
     -- Load externally-defined information (info that we don't want to change every time this file is updated).
 
-    -- Used to define misc utility functions that may be useful for this include or any job files.
-    include('Mote-Utility')
-
     -- Used for all self-command handling.
-    include('Mote-SelfCommands')
+    include('Mote-SelfCommands-B')
 
     -- Include general user globals, such as custom binds or gear tables.
     -- Load Mote-Globals first, followed by User-Globals, followed by <character>-Globals.
     -- Any functions re-defined in the later includes will overwrite the earlier versions.
-    include('Mote-Globals')
+    include('Mote-Globals-B')
     optional_include({'user-globals.lua'})
     optional_include({player.name..'-globals.lua'})
 
@@ -180,7 +179,7 @@ if not mote_include_version or mote_include_version < current_mote_include_versi
     add_to_chat(123,'For details, visit https://github.com/Kinematics/GearSwap-Jobs/wiki/Upgrading')
     rev = mote_include_version or 1
     include_path('rev' .. tostring(rev))
-    include('Mote-Include')
+    include('Mote-Include-B')
     return
 end
 
@@ -295,6 +294,7 @@ function precast(spell)
     if state.Buff[spell.english] ~= nil then
         state.Buff[spell.english] = true
     end
+    
     handle_actions(spell, 'precast')
 end
 
@@ -304,8 +304,9 @@ end
 
 function aftercast(spell)
     if state.Buff[spell.english] ~= nil then
-        state.Buff[spell.english] = not spell.interrupted or buffactive[spell.english] or false
+        state.Buff[spell.english] = not spell.interrupted or buffactive[spell.english]
     end
+
     handle_actions(spell, 'aftercast')
 end
 
@@ -420,7 +421,6 @@ function cleanup_pet_aftercast(spell, spellMap, eventArgs)
     reset_transitory_classes()
 end
 
-
 -- Clears the values from classes that only exist til the action is complete.
 function reset_transitory_classes()
     classes.CustomClass = nil
@@ -444,9 +444,18 @@ function handle_equipping_gear(playerStatus, petStatus)
         job_handle_equipping_gear(playerStatus, eventArgs)
     end
 
+    if not eventArgs.handled and user_handle_equipping_gear then
+        user_handle_equipping_gear(playerStatus, eventArgs)
+    end
+
     -- Equip default gear if job didn't handle it.
     if not eventArgs.handled then
-        equip_gear_by_status(playerStatus, petStatus)
+        -- Use the manually locked set if it exists
+        if state.LockedEquipSet ~= nil then
+            equip(state.LockedEquipSet)
+        else
+            equip_gear_by_status(playerStatus, petStatus)
+        end
     end
 end
 
@@ -528,8 +537,10 @@ function get_idle_set(petStatus)
         end
     end
 
-    idleSet = apply_defense(idleSet)
-    idleSet = apply_kiting(idleSet)
+    if state.DefenseLevel.value ~= 'Off' and state.DefenseLevel.value ~= 'EngagedOnly' then
+        idleSet = apply_defense(idleSet)    
+        idleSet = apply_kiting(idleSet)
+    end
 
     if user_customize_idle_set then
         idleSet = user_customize_idle_set(idleSet)
@@ -538,6 +549,8 @@ function get_idle_set(petStatus)
     if customize_idle_set then
         idleSet = customize_idle_set(idleSet)
     end
+
+    idleSet = apply_weapons(idleSet)
 
     return idleSet
 end
@@ -571,20 +584,12 @@ function get_melee_set()
         mote_vars.set_breadcrumbs:append(state.OffenseMode.current)
     end
 
-    if meleeSet[state.HybridMode.current] then
-        meleeSet = meleeSet[state.HybridMode.current]
-        mote_vars.set_breadcrumbs:append(state.HybridMode.current)
-    end
-
     for _,group in ipairs(classes.CustomMeleeGroups) do
         if meleeSet[group] then
             meleeSet = meleeSet[group]
             mote_vars.set_breadcrumbs:append(group)
         end
     end
-
-    meleeSet = apply_defense(meleeSet)
-    meleeSet = apply_kiting(meleeSet)
 
     if customize_melee_set then
         meleeSet = customize_melee_set(meleeSet)
@@ -593,6 +598,13 @@ function get_melee_set()
     if user_customize_melee_set then
         meleeSet = user_customize_melee_set(meleeSet)
     end
+
+    if state.DefenseLevel.value ~= 'Off' then
+        meleeSet = apply_defense(meleeSet)
+        meleeSet = apply_kiting(meleeSet)
+    end
+
+    meleeSet = apply_weapons(meleeSet)
 
     return meleeSet
 end
@@ -693,6 +705,13 @@ function get_precast_set(spell, spellMap)
 
     -- Update defintions for element-specific gear that may be used.
     set_elemental_gear(spell)
+
+    -- layer defense on top if requested
+    if state.DefenseLevel.value == "Fulltime" then
+        equipSet = apply_defense(equipSet)
+    end
+
+    equipSet = apply_weapons(equipSet)
     
     -- Return whatever we've constructed.
     return equipSet
@@ -749,6 +768,13 @@ function get_midcast_set(spell, spellMap)
     elseif spell.action_type == 'Ranged Attack' then
         equipSet = get_ranged_set(equipSet, spell, spellMap)
     end
+
+    -- layer defense on top if requested
+    if state.DefenseLevel.value == "PlusCasting" or state.DefenseLevel.value == "Fulltime" then
+        equipSet = apply_defense(equipSet)
+    end
+
+    equipSet = apply_weapons(equipSet)
     
     -- Return whatever we've constructed.
     return equipSet
@@ -869,24 +895,33 @@ end
 -- Functions for optional supplemental gear overriding the default sets defined above.
 -------------------------------------------------------------------------------------------------------------------
 
+-- Function to apply active weapons on top of the supplied set.
+-- By attaching this at the end of ANY equip, it should prevent the selected weapons from being removed by any gearswap action.
+-- If no WeaponsMode is set, then other sets are free to include weapons (ie casting sets)
+-- @param baseSet : The set that any currently active defense set will be applied on top of. (gear set table)
+function apply_weapons(baseSet)
+    weaponsSet = sets.weapons[state.WeaponsMode.current] or {}
+    baseSet = set_combine(baseSet, weaponsSet)
+    return baseSet
+end
+
+
 -- Function to apply any active defense set on top of the supplied set
 -- @param baseSet : The set that any currently active defense set will be applied on top of. (gear set table)
 function apply_defense(baseSet)
-    if state.DefenseMode.current ~= 'None' then
-        local defenseSet = sets.defense
+    local defenseSet = sets.defense
 
-        defenseSet = sets.defense[state[state.DefenseMode.current .. 'DefenseMode'].current] or defenseSet
+    defenseSet = sets.defense[state.DefenseMode.current] or defenseSet
 
-        for _,group in ipairs(classes.CustomDefenseGroups) do
-            defenseSet = defenseSet[group] or defenseSet
-        end
-
-        if customize_defense_set then
-            defenseSet = customize_defense_set(defenseSet)
-        end
-
-        baseSet = set_combine(baseSet, defenseSet)
+    for _,group in ipairs(classes.CustomDefenseGroups) do
+        defenseSet = defenseSet[group] or defenseSet
     end
+
+    if customize_defense_set then
+        defenseSet = customize_defense_set(defenseSet)
+    end
+
+    baseSet = set_combine(baseSet, defenseSet)
 
     return baseSet
 end
@@ -947,7 +982,7 @@ function select_specific_set(equipSet, spell, spellMap)
         namedSet = get_named_set(namedSet, spell, spellMap)
     end
 
-    return namedSet or equipSet
+    return namedSet
 end
 
 

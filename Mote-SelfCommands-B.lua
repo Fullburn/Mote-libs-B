@@ -53,7 +53,7 @@ function handle_set(cmdParams)
     
     if state_var then
         local oldVal = state_var.value
-        state_var:set(cmdParams[2])
+        state_var:set(T(cmdParams):slice(2):concat(' '))
         local newVal = state_var.value
         
         local descrip = state_var.description or cmdParams[1]
@@ -170,7 +170,7 @@ end
 -- Handle cycling backwards through the options list of a state var.
 -- User command format: gs c cycleback [field]
 function handle_cycleback(cmdParams)
-    cmdParms[2] = 'reverse'
+    cmdParams[2] = 'reverse'
     handle_cycle(cmdParams)
 end
 
@@ -281,6 +281,32 @@ function handle_showtp(cmdParams)
     equip(get_melee_set())
 end
 
+--lockGear: stores the current gear, overrides idle and engaged sets until toggled again.
+function handle_lockGear(cmdParams)
+    if state.LockedEquipSet == nil then
+        state.LockedEquipSet = {
+            ammo = player.equipment.ammo,
+            head = player.equipment.head,
+            neck = player.equipment.neck,
+            ear1 = player.equipment.left_ear,
+            ear2 = player.equipment.right_ear,
+            body = player.equipment.body,
+            hands = player.equipment.hands,
+            ring1 = player.equipment.left_ring,
+            ring2 = player.equipment.right_ring,
+            back = player.equipment.back,
+            waist = player.equipment.waist,
+            legs = player.equipment.legs,
+            feet = player.equipment.feet
+        }
+
+        add_to_chat(122, "Gear Locked")
+    else
+        state.LockedEquipSet = nil
+        add_to_chat(122, "Gear Unlocked")
+    end
+end
+
 
 -- Minor variation on the GearSwap "gs equip naked" command, that ensures that
 -- all slots are enabled before removing gear.
@@ -344,8 +370,8 @@ function display_current_state()
         end
         msg = msg .. ', WS: ' .. state.WeaponskillMode.value
         
-        if state.DefenseMode.value ~= 'None' then
-            msg = msg .. ', Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        if state.DefenseLevel.value ~= 'Off' then
+            msg = msg .. ', Defense: ' .. state.DefenseLevel.value .. ' (' .. state.DefenseMode.value .. ')'
         end
         
         if state.Kiting.value == true then
@@ -384,8 +410,8 @@ function display_current_caster_state()
     
     msg = msg .. 'Casting ['..state.CastingMode.value..'], Idle ['..state.IdleMode.value..']'
     
-    if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+    if state.DefenseLevel.value ~= 'Off' then
+        msg = msg .. ', Defense: ' .. state.DefenseLevel.value .. ' (' .. state.DefenseMode.value .. ')'
     end
     
     if state.Kiting.value == true then
@@ -415,7 +441,7 @@ function handle_help(cmdParams)
         print('--------------------------')
         print('OffenseMode, HybridMode, RangedMode, WeaponskillMode')
         print('CastingMode, IdleMode, RestingMode, Kiting')
-        print('DefenseMode, PhysicalDefenseMode, MagicalDefenseMode')
+        print('DefenseMode')
         print('SelectNPCTargets, PCTargetMode')
         print('EquipStop (precast, midcast, pet_midcast)')
     else
@@ -460,6 +486,7 @@ selfCommandMaps = {
     ['unset']    = handle_unset,
     ['update']   = handle_update,
     ['showtp']   = handle_showtp,
+    ['lockGear'] = handle_lockGear,
     ['naked']    = handle_naked,
     ['help']     = handle_help,
     ['test']     = handle_test}

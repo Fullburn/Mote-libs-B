@@ -538,7 +538,7 @@ function get_idle_set(petStatus)
     end
 
     if state.DefenseLevel.value ~= 'Off' and state.DefenseLevel.value ~= 'EngagedOnly' then
-        idleSet =   se(idleSet)    
+        idleSet = apply_defense(idleSet)    
         idleSet = apply_kiting(idleSet)
     end
 

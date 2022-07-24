@@ -38,8 +38,8 @@ function job_setup()
     info.default_u_ja_ids = S{201, 202, 203, 205, 207}
 
     -- Mode definitions
-    state.WeaponsMode:options('Dagger', 'Boomerang', 'Sword', 'TH', 'None')
-    state.OffenseMode:options('Normal', 'Acc')
+    state.WeaponsMode:options('Dagger', 'Boomerang', 'Acid', 'Sword', 'TH', 'None')
+    state.OffenseMode:options('Normal', 'Acc', 'Subtle')
     state.DefenseMode:options('Evasion', 'PDT')
     state.DefenseLevel:options('Off', 'On')
 
@@ -70,13 +70,13 @@ function init_gear_sets()
     --------------------------------------
 
     -- Precast sets to enhance JAs
-    sets.precast.JA['Collaborator'] = { head="Raider's Bonnet +2"}
-    sets.precast.JA['Accomplice'] = { head="Raider's Bonnet +2"}
-    sets.precast.JA['Flee'] = { feet="Pillager's Poulaines +1"}
-    sets.precast.JA['Hide'] = { body="Pillager's Vest +1"}
-    sets.precast.JA['Conspirator'] = { body="Raider's Vest +2" }
-    sets.precast.JA['Steal'] = { head="Plunderer's Bonnet", hands="Pillager's Armlets +1", legs="Pillager's Culottes +2", feet="Pillager's Poulaines +1" }
-    sets.precast.JA['Despoil'] = { legs="Raider's Culottes +2", feet="Skulker's Poulaines +1"}
+    sets.precast.JA['Collaborator'] = { head="Skulker's Bonnet +1"}
+    sets.precast.JA['Accomplice'] = { head="Skulker's Bonnet +1"}
+    sets.precast.JA['Flee'] = { feet="Pillager's Poulaines +1" }
+    sets.precast.JA['Hide'] = { body="Pillager's Vest +3"}
+    sets.precast.JA['Conspirator'] = { body="Skulker's Vest +1" }
+    sets.precast.JA['Steal'] = { head="Plunderer's Bonnet", hands="Pillager's Armlets +1", legs="Pillager's Culottes +3", feet="Pillager's Poulaines +1" }
+    sets.precast.JA['Despoil'] = { legs="Skulker's Culottes +1", feet="Skulker's Poulaines +1"}
     sets.precast.JA['Perfect Dodge'] = { hands="Plunderer's Armlets +1"}
     sets.precast.JA['Feint'] = { legs="Plunderer's Culottes +1" }
 
@@ -99,6 +99,7 @@ function init_gear_sets()
     -- Waltz set (potency, chr and vit)
     sets.precast.Waltz = {
         head="Mummu Bonnet +2",
+        body="Gleti's Cuirass",
     }
 
     -- Don't need any special gear for Healing Waltz.
@@ -116,15 +117,15 @@ function init_gear_sets()
 
     sets.idle = { 
         ammo="Coiste Bodhar",
-        head="Nyame Helm",
-        body=gear.AdhemarJacket.Attack,
-        hands=gear.AdhemarWrists.Attack,
-        legs="Mummu Kecks +2",
+        head="Gleti's Mask",
+        body="Gleti's Cuirass",
+        hands="Gleti's Gauntlets",
+        legs="Gleti's Breeches",
         feet="Skadi's Jambeaux +1",
         neck="Sanctity Necklace",
         waist="Sailfi Belt +1",
-        left_ear="Brutal Earring",
-        right_ear="Suppanomimi",
+        left_ear="Cessance Earring",
+        right_ear="Brutal Earring",
         left_ring="Epona's Ring",
         right_ring="Vocane Ring",
         back=gear.Toutatis.DW,
@@ -138,14 +139,15 @@ function init_gear_sets()
     sets.engaged = {
         ammo="Coiste Bodhar",
         head="Blistering Sallet +1", --8%
-        body=gear.AdhemarJacket.Attack, --4%
+        body="Pillager's Vest +3", --4%
+        --body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
-        legs="Mummu Kecks +2", --6%
-        feet="Mummu Gamash. +2", --4%
-        neck="Sanctity Necklace",
+        legs="Pillager's Culottes +3", --6%
+        feet="Malignance Boots",
+        neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
-        left_ear="Brutal Earring",
-        right_ear="Suppanomimi",
+        left_ear="Cessance Earring",
+        right_ear="Brutal Earring",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
         back=gear.Toutatis.DW,
@@ -154,6 +156,12 @@ function init_gear_sets()
     sets.engaged.Acc = set_combine(sets.engaged, {
         body="Mummu Jacket +2",
         hands="Mummu Wrists +2",
+        neck="Sanctity Necklace",
+    })
+
+    sets.engaged.Subtle = set_combine(sets.engaged, {
+        feet="Mummu Gamash. +2", --9
+        right_ring="Rajas Ring", --5
     })
 
     --------------------------------------
@@ -162,24 +170,32 @@ function init_gear_sets()
 
     sets.weapons.Dagger = {
         main="Kaja Knife",
-        sub="Jugo Kukri +1",
+        sub="Gleti's Knife",
     }
 
     sets.weapons.Boomerang = {
         main="Kaja Knife",
-        sub="Jugo Kukri +1",
+        sub="Gleti's Knife",
         range="Raider's Bmrng.",
         ammo="", -- Force the slot clear
     }
 
+    sets.weapons.Acid = {
+        main="Kaja Knife",
+        sub="Gleti's Knife",
+        range="Exalted Crossbow",
+        ammo="Acid Bolt",
+    }
+
     sets.weapons.Sword = {
         main="Naegling",
-        sub="Jugo Kukri +1",
+        sub="Gleti's Knife",
     }
 
     sets.weapons.TH = {
         main="Kaja Knife",
-        sub="Thief's Knife",
+        sub="Gleti's Knife",
+        ammo="Perfect Lucky Egg",
     }
 
     --------------------------------------
@@ -192,9 +208,9 @@ function init_gear_sets()
         head="Pillager's Bonnet +2",
         body=gear.AdhemarJacket.Attack,
         hands=gear.AdhemarWrists.Attack,
-        legs="Pillager's Culottes +2",
-        feet="Mummu Gamash. +2",
-        neck="Sanctity Necklace",
+        legs="Pillager's Culottes +3",
+        feet="Gleti's Boots",
+        neck="Anu Torque",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
@@ -206,7 +222,7 @@ function init_gear_sets()
     sets.precast.WS.SA = set_combine(sets.precast.WS, sets.precast.JA['Sneak Attack'])
     sets.precast.WS.TA = set_combine(sets.precast.WS, sets.precast.JA['Trick Attack'])
 
-    sets.precast.WS.SATA = set_combine(sets.precast.WS, {
+    sets.precast.WS.SATA = set_combine(sets.precast.WS.SA, {
         hands="Pillager's Armlets +1",
     })
 
@@ -214,9 +230,8 @@ function init_gear_sets()
     sets.precast.WS['Evisceration'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
         body="Mummu Jacket +2",
-        legs="Mummu Kecks +2",
-        neck="Light Gorget",
-        waist="Light Belt",
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
     })
 
     -- 183 MAB, INT, DEX
@@ -228,8 +243,7 @@ function init_gear_sets()
         feet="Nyame Sollerets",
         left_ear="Hecate's Earring",
         right_ear="Novio Earring",
-        left_ring="Shiva Ring +1",
-        right_ring="Metamorph Ring +1",
+        left_ring="Beithir Ring",
         waist="Eschan Stone",
         back=gear.Toutatis.WSD,
     })
@@ -239,7 +253,7 @@ function init_gear_sets()
     --------------------------------------
 
     sets.TreasureHunter = {
-        head="White Rarab Cap +1",
+        --head="White Rarab Cap +1",
         hands="Plunderer's Armlets +1", 
         feet="Skulker's Poulaines +1",
     }
@@ -278,15 +292,13 @@ function job_post_precast(spell, action, spellMap, eventArgs)
         equip(sets.TreasureHunter)
     elseif state.TreasureMode.value == 'SATA' and (spell.english=='Sneak Attack' or spell.english=='Trick Attack') then
         equip(sets.TreasureHunter)
-    elseif state.TreasureMode.value == 'Fulltime' then
-        equip(sets.TreasureHunter)
     end
 end
 
 -- Run after the general midcast() set is constructed.
 function job_post_midcast(spell, action, spellMap, eventArgs)
-    if state.TreasureMode.value ~= 'None' and spell.action_type == 'Ranged Attack' then
-        TH_for_first_hit()
+    if state.TreasureMode.value ~= 'None' and (spell.action_type == 'Ranged Attack' or spell.english == "Sleepga") then
+        TH_for_first_hit(true)
     end
 end
 
@@ -307,11 +319,11 @@ end
 -- Called when a player gains or loses a buff.
 -- buff == buff gained or lost
 -- gain == true if the buff was gained, false if it was lost.
--- function job_buff_change(buff, gain)
---     if not midaction() then
---         handle_equipping_gear(player.status)
---     end
--- end
+function job_buff_change(buff, gain)
+    if not midaction() then
+        handle_equipping_gear(player.status)
+    end
+end
 
 -------------------------------------------------------------------------------------------------------------------
 -- User code that supplements standard library decisions.
@@ -366,7 +378,7 @@ function display_current_job_state(eventArgs)
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
     
     if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value
     end
     
     if state.Kiting.value == true then

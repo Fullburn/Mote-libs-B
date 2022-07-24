@@ -25,9 +25,11 @@ end
 
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
+    include('Mote-TreasureHunter')
+
     -- Mode definitions
-    state.WeaponsMode:options('Sword', 'Club', 'None')
-    state.OffenseMode:options('Normal', 'Acc')
+    state.WeaponsMode:options('Sword', 'Club', 'Nuke', 'Tank', 'None')
+    state.OffenseMode:options('Normal', 'Acc', 'Subtle')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
     state.DefenseMode:options('PDT')
@@ -61,35 +63,40 @@ function init_gear_sets()
 
     sets.idle = { 
         ammo="Coiste Bodhar",
-        head="Nyame Helm",
+        head="Gleti's Mask",
         body="Jhakri Robe +2",
-        hands="Nyame Gauntlets",
+        hands="Gleti's Gauntlets",
         legs="Carmine Cuisses +1",
-        feet="Nyame Sollerets",
+        feet="Gleti's Boots",
         neck="Sanctity Necklace",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear="Suppanomimi",
         left_ring="Epona's Ring",
         right_ring="Rajas Ring",
-        back=Rosmerta.DA,
+        back=gear.Rosmerta.DA,
+    }
+
+    sets.TreasureHunter = {
+        head="White Rarab Cap +1",
+        ammo="Perfect Lucky Egg", 
     }
 
     --------------------------------------
     -- Combat sets
     --------------------------------------
 
-    -- Normal melee group, max haste + DW + multiattack
+    -- Normal melee group, max haste + DW + multiattack + crit + attack
     sets.engaged = {
         ammo="Coiste Bodhar",
         head="Blistering Sallet +1", --8%
         body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
-        legs="Jhakri Slops +2", --2%
-        feet="Luhlaza Charuqs +2",
+        legs="Malignance Tights", --9%
+        feet="Malignance Boots", --3%
         neck="Sanctity Necklace",
         waist="Sailfi Belt +1", --9%
-        left_ear="Brutal Earring",
+        left_ear="Cessance Earring",
         right_ear="Suppanomimi",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
@@ -111,6 +118,12 @@ function init_gear_sets()
         hands="Aya. Manopolas +2",
     })
 
+    sets.engaged.Subtle = set_combine(sets.engaged, {
+        hands="Luhlaza Bazubands +1", --9
+        right_ring="Rajas Ring", --5
+        feet="Volte Spats" --9
+    })
+
     --------------------------------------
     -- Weapon sets
     --------------------------------------
@@ -123,6 +136,16 @@ function init_gear_sets()
     sets.weapons.Club = {
         main="Kaja Club",
         sub="Thibron",
+    }
+
+    sets.weapons.Nuke = {
+        main="Sakpata's Sword",
+        sub="Kaja Rod",
+    }
+
+    sets.weapons.Tank = {
+        main="Sakpata's Sword",
+        sub="Culminus",
     }
 
     --------------------------------------
@@ -142,17 +165,17 @@ function init_gear_sets()
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
         left_ring="Epona's Ring",
-        right_ring="Rajas Ring",
+        right_ring="Beithir Ring",
         back=gear.Rosmerta.WSD,
     }
 
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        hands=AdhemarWrists.Attack,
-        feet="Aya. Gambieras +2",
-        neck="Light Gorget",
-        waist="Light Belt",
+        hands=gear.AdhemarWrists.Attack,
+        feet="Gleti's Boots",
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
     })
 
     sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.BlackMagic, {
@@ -170,7 +193,7 @@ function init_gear_sets()
         legs="Nyame Flanchard", --8%
         feet="Nyame Sollerets", --7%
         right_ring="Vocane Ring",
-        back=Rosmerta.DA
+        back=gear.Rosmerta.DA
     }
 
     --------------------------------------
@@ -183,19 +206,22 @@ function init_gear_sets()
     sets.precast.JA.Efflux = { }
     sets.precast.JA['Azure Lore'] = { }
 
-    sets.precast.JA.Provoke = set_combine(sets.BlueMagic.Enmity, {})
-    sets.precast.JA.Warcry = set_combine(sets.BlueMagic.Enmity, {})
+    --sets.precast.JA.Provoke = set_combine(sets.BlueMagic.Enmity, {})
+    --sets.precast.JA.Warcry = set_combine(sets.BlueMagic.Enmity, {})
 
     -- Fast cast sets for spells
     sets.precast.FC = {
         head="Jhakri Coronal +2", --1 (set bonus)
-        body="Luhlaza Jubbah +1", -- 7
-        hands="Jhakri Cuffs +2", -- 1 (set bonus)
+        body="Hashishin Mintan +1", -- 14
+        hands="Hashishin Bazubands +1", -- (recast bonus if not replaced)
         legs="Aya. Cosciales +2", -- 6
-        feet="Jhakri Pigaches +2", -- 1 (set bonus)
-        right_ring="Jhakri Ring", -- 1 (set bonus)
+        feet=gear.HerculeanFeet.FC, -- 4
+        left_ring="Jhakri Ring", -- 1 (set bonus)
+        right_ring="Kishar Ring", -- 4
         right_ear="Loquacious Earring", -- 2
     }
+
+    sets.precast.FC.Utsusemi = set_combine(sets.precast.FC, { neck="Magoraga Beads" })
 
     --------------------------------------
     -- Midcast sets
@@ -206,6 +232,7 @@ function init_gear_sets()
     sets.midcast.Blue_Physical_VIT = set_combine(sets.precast.WS, sets.defense)
     sets.midcast.Blue_Physical_AGI = sets.precast.WS
     sets.midcast.Blue_Physical_Other = sets.precast.WS
+
     sets.midcast.Blue_Stun = sets.engaged.Acc2
 
     sets.midcast.Blue_Magical_INTMAB = {
@@ -216,15 +243,18 @@ function init_gear_sets()
         legs="Jhakri Slops +2",
         feet="Jhakri Pigaches +2",
         neck="Sanctity Necklace",
-        waist="Salire Belt",
-        left_ear="Lifestorm Earring",
-        right_ear="Psystorm Earring",
+        waist="Acuity Belt +1",
+        left_ear="Hecate's Earring",
+        right_ear="Novio Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Shiva Ring +1",
         back="Izdubar Mantle",
     }
 
-    sets.midcast.Blue_Magical_MACC = sets.midcast.Blue_Magical_INTMAB
+    sets.midcast.Blue_Magical_MACC = set_combine(sets.midcast.Blue_Magical_INTMAB, {
+        left_ear="Hermetic Earring",
+    })
+
     sets.midcast.Blue_Magical_Light = sets.midcast.Blue_Magical_INTMAB
     sets.midcast.Blue_Magical_Dark = sets.midcast.Blue_Magical_INTMAB
     sets.midcast.Blue_Magical_Earth = sets.midcast.Blue_Magical_INTMAB
@@ -236,11 +266,11 @@ function init_gear_sets()
         hands="Weath. Cuffs +1",
         legs="Aya. Cosciales +2",
         feet="Aya. Gambieras +2",
-        waist="Salire Belt",
-        left_ear="Lifestorm Earring",
-        right_ear="Psystorm Earring",
+        --waist="",
+        left_ear="Influx Earring",
+        --right_ear="",
         left_ring="Metamorph Ring +1",
-        right_ring="Levia. Ring",
+        right_ring="Naji's Loop",
     }
 
     sets.midcast.Blue_SelfCure = set_combine(sets.midcast.Blue_Cure, { left_ring="Vocane Ring" })
@@ -250,6 +280,10 @@ function init_gear_sets()
         body="Assim. Jubbah +2",
         feet="Luhlaza Charuqs +2",
     }
+
+    sets.midcast.Occultation = set_combine(sets.midcast.Blue_Skill, {
+        hands="Hashishin Bazubands +1",
+    })
 
     --------------------------------------
     -- Special sets (required by rules)
@@ -325,7 +359,7 @@ function display_current_job_state(eventArgs)
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
     
     if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value
     end
     
     if state.Kiting.value == true then

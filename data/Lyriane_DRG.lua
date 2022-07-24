@@ -13,8 +13,8 @@ end
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
     -- Mode definitions
-    state.WeaponsMode:options('Lance', 'Sword', 'DualSword', 'None')
-    state.OffenseMode:options('Normal', 'Acc')
+    state.WeaponsMode:options('Lance', 'Sword', 'DualSword', 'Staff', 'None')
+    state.OffenseMode:options('Normal', 'Acc', 'Subtle')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
     state.DefenseMode:options('Evasion', 'PDT')
@@ -48,29 +48,47 @@ function init_gear_sets()
 
     -- Precast sets to enhance JAs
     sets.precast.JA['Spirit Surge'] = {
-        body="Pteroslaver Mail +1",
+        body="Pteroslaver Mail +3",
+        feet="Pteroslaver Greaves +3",
     }
 
     sets.precast.JA['Jump'] = {
-        body="Vishap Mail +1",
+        body="Pteroslaver Mail +3",
+        feet="Vishap Greaves +2",
+        neck="Dragoon's Collar +1",
     }
 
-    sets.precast.JA['High Jump'] = set_combine(sets.precast.JA.Jump, {})
+    sets.precast.JA['High Jump'] = set_combine(sets.precast.JA.Jump, {
+        legs="Pteroslaver Brais +2",
+    })
+
     sets.precast.JA['Spirit Jump'] = set_combine(sets.precast.JA.Jump, {})
-    sets.precast.JA['Soul Jump'] = set_combine(sets.precast.JA.Jump, {})
+    
+    sets.precast.JA['Soul Jump'] = set_combine(sets.precast.JA.Jump, {
+        body="Vishap Mail +1",
+    })
 
     sets.precast.JA.Angon = {
         ammo="Angon",
-        hands="Ptero. Fin. G. +1",
+        hands="Ptero. Fin. G. +3",
         right_ear="Dragoon's Earring",
     }
 
     sets.precast.JA['Call Wyvern'] = {
-        body="Pteroslaver Mail +1",
+        body="Pteroslaver Mail +3",
+        legs="Vishap Brais +3",
+        neck="Dragoon's Collar +1",
+        left_ring="Dreki Ring",
     }
 
     sets.precast.JA['Spirit Link'] = {
-        feet="Pteroslaver Greaves +1",
+        legs="Vishap Brais +3",
+        feet="Pteroslaver Greaves +3",
+    }
+
+    sets.precast.JA['Steady Wing'] = {
+        legs="Vishap Brais +3",
+        feet="Pteroslaver Greaves +3",
     }
 
     -- Fast cast sets for spells
@@ -78,20 +96,22 @@ function init_gear_sets()
         ear2="Loquacious Earring",
     }
 
+    sets.precast.FC.Utsusemi = set_combine(sets.precast.FC, { neck="Magoraga Beads" })
+
     --------------------------------------
     -- Idle / Resting sets
     --------------------------------------
 
     sets.idle = { 
         ammo="Coiste Bodhar",
-        head="Sulevia's Mask +2",
-        body="Sulevia's Platemail +2",
-        hands="Sulevia's Gauntlets +2",
+        head="Gleti's Mask",
+        body="Gleti's Cuirass",
+        hands="Gleti's Gauntlets",
         legs="Carmine Cuisses +1",
-        feet="Sulevia's Leggings +2",
-        neck="Sanctity Necklace",
+        feet="Gleti's Boots",
+        neck="Dragoon's Collar +1",
         waist="Sailfi Belt +1",
-        left_ear="Thrud Earring",
+        left_ear="Cessance Earring",
         right_ear="Brutal Earring",
         left_ring="Dreki Ring",
         right_ring="Rajas Ring",
@@ -102,25 +122,31 @@ function init_gear_sets()
     -- Combat sets
     --------------------------------------
 
-    -- Normal melee group, max haste + DW + multiattack
+    -- Normal melee group, max haste + multiattack + STP
+    -- 26 haste, 10 TA, 19 DA, 34 STP
     sets.engaged = {
-        ammo="Coiste Bodhar",
-        head="Flamma Zucchetto +2", --4%
-        body="Flamma Korazin +2", --2%
-        hands="Flamma Manopolas +2", --4%
-        legs="Flamma Dirs +2", --4%
-        feet="Flamma Gambieras +2", --2%
-        neck="Sanctity Necklace",
-        waist="Sailfi Belt +1", --9%
-        left_ear="Thrud Earring",
-        right_ear="Brutal Earring",
-        left_ring="Dreki Ring",
-        right_ring="Rajas Ring",
+        ammo="Coiste Bodhar", -- DA 3 / STP 3
+        head="Pteroslaver Armet +3", --7% / TA 4
+        body="Flamma Korazin +2", --2% / STP 9
+        hands="Flamma Manopolas +2", --4% / STP 6
+        legs="Sulevia's Cuisses +2", --2% / TA 4
+        feet="Flamma Gambieras +2", --2% / DA 6 / STP 6
+        neck="Shulmanu Collar", -- DA 3
+        waist="Sailfi Belt +1", --9% / TA 2 / DA 5
+        left_ear="Cessance Earring",
+        right_ear="Brutal Earring", -- DA 5
+        left_ring="Flamma Ring", -- STP 5
+        right_ring="Rajas Ring", -- STP 5
         back=gear.Brigantia.DA,
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
         ammo="Ginsen"
+    })
+
+    sets.engaged.Subtle = set_combine(sets.engaged, {
+        hands="Sulevia's Gauntlets +2",
+        feet="Volte Spats"
     })
 
     --------------------------------------
@@ -129,11 +155,12 @@ function init_gear_sets()
 
     sets.weapons.Lance = {
         main="Kaja Lance",
-        sub="Pole Grip",
+        sub="Utu Grip",
     }
 
     sets.weapons.Sword = {
         main="Naegling",
+        sub="Twinned Shield",
     }
 
     sets.weapons.DualSword = {
@@ -143,7 +170,7 @@ function init_gear_sets()
 
     sets.weapons.Staff = {
         main="Malignance Pole",
-        sub="Tokko Grip",
+        sub="Utu Grip",
     }
 
     --------------------------------------
@@ -153,31 +180,37 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Knobkierrie",
-        head="Sulevia's Mask +2",
+        head="Pteroslaver Armet +3",
         body="Sulevia's Platemail +2",
-        hands="Sulevia's Gauntlets +2",
-        legs="Sulevia's Cuisses +2",
+        hands="Pteroslaver Finger Gauntlets +3",
+        legs="Vishap Brais +3",
+         -- legs="Sulevia's Cuisses +2",
         feet="Sulevia's Leggings +2",
-        neck="Sanctity Necklace",
+        neck="Dragoon's Collar +1",
         waist="Sailfi Belt +1",
         left_ear="Thrud Earring",
         right_ear=gear.Moonshade,
-        left_ring="Dreki Ring",
+        left_ring="Beithir Ring",
         right_ring="Rajas Ring",
         back=gear.Brigantia.WSD,
     }
 
-    -- prefers DEX, crit rate, and fTP
-    sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {
-        neck="Light Gorget",
-        waist="Light Belt",
+    sets.precast.WS["Camlann's Torment"] = set_combine(sets.precast.WS, {
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
     })
 
-    -- 183 MAB, INT, DEX
+    -- prefers STR and fTP
+    sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
+    })
+
+    -- prefers STR and crit rate; negative attack mul
     sets.precast.WS['Drakesbane'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        neck="Light Gorget",
-        waist="Light Belt",
+        body="Gleti's Cuirass",
+        legs="Gleti's Breeches",
     })
 
     --------------------------------------
@@ -187,15 +220,19 @@ function init_gear_sets()
     -- breath sets!
     sets.midcast.BreathTrigger = {
         head="Vishap Armet +1",
+        hands="Despair Finger Gauntlets",
+        legs="Vishap Brais +3",
     }
 
     sets.midcast.Pet['Healing Breath'] = {
-        head="Pteroslaver Armet +1",
-        legs="Flamma Dirs +2", --cure received 9%
+        head="Pteroslaver Armet +3",
+        hands="Despair Finger Gauntlets",
+        legs="Vishap Brais +3",
     }
 
     sets.midcast.Pet['Elemental Breath'] = {
-        head="Pteroslaver Armet +1",
+        head="Pteroslaver Armet +3",
+        legs="Vishap Brais +3",
     }
 
     --------------------------------------
@@ -209,7 +246,6 @@ function init_gear_sets()
         hands="Nyame Gauntlets", --7%
         legs="Nyame Flanchard", --8%
         feet="Nyame Sollerets", --7%
-        neck="Twilight Torque",
         left_ring="Vocane Ring",
         back=gear.Brigantia.DA,
     }
@@ -218,6 +254,10 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Job-specific hooks for standard casting events.
 -------------------------------------------------------------------------------------------------------------------
+
+function job_precast(spell, action, spellMap, eventArgs)
+    refine_jump(spell, action, spellMap, eventArgs)
+end
 
 -- Run after the general midcast() set is constructed.
 function job_post_midcast(spell, action, spellMap, eventArgs)
@@ -242,6 +282,32 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- User code that supplements standard library decisions.
 -------------------------------------------------------------------------------------------------------------------
+
+-- Replace Jump with a Spirit Jump, or Soul Jump, if the others are on cooldown.
+function refine_jump(spell, action, spellMap, eventArgs)
+    if spell.name ~= "Jump" then
+        return
+    end
+
+    local abil_recasts = windower.ffxi.get_ability_recasts()
+    if (abil_recasts[spell.recast_id] > 0) then
+        eventArgs.cancel = true
+
+        -- ID 166 is Spirit Jump, 167 is Soul Jump.
+        local newJump = nil
+        if (abil_recasts[166] == 0) then
+            newJump = "Spirit Jump"
+        elseif (abil_recasts[167] == 0) then
+            newJump = "Soul Jump"
+        end
+        
+        if (newJump ~= nil) then
+            send_command('@input /ja "'..newJump..'" '..tostring(spell.target.raw))
+        else
+            add_to_chat(123,'Abort: Ability waiting on recast.')
+        end
+    end
+end
 
 -- Function to check whether we are able to trigger healing breath on this cast.
 function is_healing_breath_trigger(spell)
@@ -271,7 +337,7 @@ function display_current_job_state(eventArgs)
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
     
     if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value
     end
     
     if state.Kiting.value == true then
@@ -303,7 +369,9 @@ function select_default_macro_book()
     elseif player.sub_job == 'WAR' then
         set_macro_page(1, 3)
     elseif player.sub_job == 'NIN' then
-        set_macro_page(1, 3)
+        set_macro_page(3, 3)
+    elseif player.sub_job == 'BLU' then
+        set_macro_page(2, 3)
     else
         set_macro_page(1, 3)
     end

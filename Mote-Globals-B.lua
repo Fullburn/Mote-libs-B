@@ -44,7 +44,7 @@ function define_global_sets()
 	gear.AdhemarWrists.Attack = { name="Adhemar Wrist. +1", augments = {'STR+12','DEX+12','Attack+20',} }
 
     gear.HerculeanFeet = {}
-    gear.HerculeanFeet.TH = {name="Herculean Boots", augments={'"Avatar perpetuation cost" -1','Accuracy+9','"Treasure Hunter"+1','Mag. Acc.+2 "Mag.Atk.Bns."+2',}}
+    gear.HerculeanFeet.FC = {name="Herculean Boots", augments={'Sklchn.dmg.+6%','DEX+5','"Fast Cast"+4','Mag. Acc.+19 "Mag.Atk.Bns."+19',}}
 
 	-- Definitions for global functionality
 	info.Incapacitated = S{ "terror", "petrification", "sleep", "stun"}

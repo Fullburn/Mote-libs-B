@@ -189,9 +189,13 @@ spell_maps = {
         'Aspir', 'Aspir II'},
     ['Absorb'] = S{
         'Absorb-Str', 'Absorb-Dex', 'Absorb-Vit', 'Absorb-Agi', 'Absorb-Int', 'Absorb-Mnd', 'Absorb-Chr', 'Absorb-Acc', 'Absorb-TP', 'Absorb-Attri'},
+    ['Gain'] = S{
+        'Gain-STR', 'Gain-DEX', 'Gain-VIT', 'Gain-AGI', 'Gain-INT', 'Gain-MND', 'Gain-CHR'},
     ['Enspell'] = S{
         'Enstone', 'Enwater', 'Enaero', 'Enfire', 'Enblizzard', 'Enthunder', 'Enlight', 'Endark',
         'Enstone II', 'Enwater II', 'Enaero II', 'Enfire II', 'Enblizzard II', 'Enthunder II', 'Enlight II', 'Endark II'},
+    ['Temper'] = S{
+        'Temper', 'Temper II'},
     ['ElementalEnfeeble'] = S{
         'Burn', 'Frost', 'Choke', 'Rasp', 'Shock', 'Drown'},
 
@@ -279,7 +283,7 @@ spell_maps = {
     ['Blue_Magical_Earth'] = S{
          'Embalming Earth', 'Entomb', 'Sandspin' },
     ['Blue_Magical_Other'] = S{
-         'Osmosis', 'Feather Tickle', 'Reaving Wind', 'Blazing Bound'},
+         'Feather Tickle', 'Reaving Wind', 'Blazing Bound'},
 
     ['Blue_Magical_MACC'] = S{
         '1000 Needles', 'Absolute Terror', 'Auroral Drape', 'Awful Eye', 'Blastbomb', 'Blank Gaze', 'Blistering Roar', 'Blitzstrahl',
@@ -295,7 +299,7 @@ spell_maps = {
     ['Blue_Stun'] = S{
         'Frypan', 'Head Butt', 'Sudden Lunge', 'Tail slap', 'Sub-zero Smash', 'Sweeping Gouge'},
     ['Blue_Skill'] = S{
-        'Diamondhide', 'Metallic Body', 'Magic Barrier', 'Atra. Libations'},
+        'Diamondhide', 'Metallic Body', 'Magic Barrier', 'Atra. Libations', 'Occultation'},
     ['Blue_Cure'] = S{
         'Healing Breeze', 'Magic Fruit', 'Plenilune Embrace', 'Pollen', 'Restoral', 'Wild Carrot'},
     ['Blue_Buff'] = S{

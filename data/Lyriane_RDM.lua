@@ -27,16 +27,18 @@ end
 function job_setup()
     -- Mode definitions
     state.WeaponsMode:options('None', 'Sword', 'DualSword', 'Dagger', 'DualDagger', 'Club')
-    state.OffenseMode:options('Normal', 'Acc')
+    state.OffenseMode:options('Normal', 'Acc1', 'Acc2')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
     state.DefenseMode:options('Evasion', 'PDT')
-    state.CastingMode:options('Normal', 'Acc1', 'Potency')
+    state.CastingMode:options('Normal', 'MB', 'Potency', 'Macc')
 
     -- Augmented gear definitions
     gear.Sucellos = {}
     gear.Sucellos.Cures = { name = "Sucellos's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','MND+10','"Cure" potency +10',} }
     gear.Sucellos.Nuke = { name = "Sucellos's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',} }
+    gear.Sucellos.STP = { name = "Sucellos's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Store TP"+10','Phys. dmg. taken-10%',} }
+    gear.Sucellos.WSD = { name = "Sucellos's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',} }
 
     -- Additional local binds    
     send_command('bind f11 gs c cycle castingmode')
@@ -61,15 +63,15 @@ function init_gear_sets()
 
     -- Precast sets to enhance JAs
     sets.precast.JA.Chainspell = {
-        body="Vitiation Tabard +2",
+        body="Vitiation Tabard +3",
     }
 
     -- Fast cast sets for spells
     sets.precast.FC = {
         head="Atro. Chapeau +2", -- 14
-        body="Vitiation Tabard +2", -- 14
+        body="Vitiation Tabard +3", -- 16
         hands="Volte Gloves", --6
-        legs="Aya. Cosciales +2", -- 6
+        legs="Ayanmo Cosciales +2", -- 6
         left_ear="Loquacious Earring", -- 2
         waist="Embla Sash", -- 5
     }
@@ -86,13 +88,13 @@ function init_gear_sets()
         body="Atrophy Tabard +3",
         hands="Nyame Gauntlets",
         legs="Atrophy Tights +2",
-        feet="Vitiation Boots +2",
-        neck="Sanctity Necklace",
-        waist="Salire Belt",
+        feet="Vitiation Boots +3",
+        neck="Erra Pendant",
+        waist="Obstinate Sash",
         left_ear="Snotra Earring",
         right_ear="Malignance Earring",
         left_ring="Metamorph Ring +1",
-        right_ring="Levia. Ring",
+        right_ring="Kishar Ring",
         back=gear.Sucellos.Cures,
     }
 
@@ -100,6 +102,7 @@ function init_gear_sets()
         main="Chatoyant Staff", --10%?
         sub="Enki Strap",
         hands={ name="Weath. Cuffs +1", augments={'MP+45',}}, --9%
+        right_ring="Naji's Loop",
     })
 
     sets.midcast.Curaga = sets.midcast.Cure   
@@ -113,45 +116,68 @@ function init_gear_sets()
         body="Atrophy Tabard +3",
         hands="Jhakri Cuffs +2",
         legs="Jhakri Slops +2",
-        feet="Vitiation Boots +2",
-        neck="Sanctity Necklace",
+        feet="Vitiation Boots +3",
+        neck="Erra Pendant",
         waist="Acuity Belt +1",
         left_ear="Snotra Earring",
         right_ear="Malignance Earring",
         left_ring="Metamorph Ring +1",
-        right_ring="Shiva Ring +1",
+        right_ring="Kishar Ring",
         back=gear.Sucellos.Nuke,
     }
 
     sets.midcast.Enfeebling_INT.Potency = set_combine(sets.midcast.Enfeebling_INT, {
         hands="Volte Gloves",
         feet="Jhakri Pigaches +2",
+        right_ring="Shiva Ring +1",
     })
 
     sets.midcast.BlackMagic = set_combine(sets.midcast.Enfeebling_INT, {
         head="Jhakri Coronal +2",
         body="Jhakri Robe +2",
         hands="Jhakri Cuffs +2",
+        neck="Sanctity Necklace",
         left_ear="Hecate's Earring",
         right_ear="Malignance Earring",
+        right_ring="Shiva Ring +1",
     })
 
-    sets.midcast.BlackMagic.Acc1 = set_combine(sets.midcast.BlackMagic, {
+    sets.midcast.BlackMagic.MB = set_combine(sets.midcast.BlackMagic, {
+        feet="Jhakri Pigaches +2",
+    })
+
+    sets.midcast.BlackMagic.Macc = set_combine(sets.midcast.BlackMagic, {
         left_ear="Snotra Earring",
     })
 
     sets.midcast['Enhancing Magic'] = {
-        body="Vitiation Tabard +2",
-        hands="Atrophy Gloves +2",
+        body="Vitiation Tabard +3",
+        hands="Atrophy Gloves +3",
         legs="Atrophy Tights +2",
-        feet="Estq. Houseaux +1",
+        feet="Lethargy Houseaux +1",
         waist="Embla Sash",
         back=gear.Sucellos.Cures,
     }
 
+    sets.midcast.Temper = set_combine(sets.midcast['Enhancing Magic'], {
+        hands="Vitiation Gloves +2",
+    })
+
     sets.midcast.Refresh = set_combine(sets.midcast['Enhancing Magic'], {
         body="Atrophy Tabard +3",
-        legs="Estqr. Fuseau +2",
+        legs="Lethargy Fuseau",
+    })
+
+    sets.midcast.Stoneskin = set_combine(sets.midcast['Enhancing Magic'], {
+        waist="Siegel Sash",
+    })
+
+    sets.midcast.Gain = set_combine(sets.midcast['Enhancing Magic'], {
+        hands="Vitiation Gloves +2",
+    })
+
+    sets.midcast['Dark Magic'] = set_combine(sets.midcast.BlackMagic, {
+        neck = "Erra Pendant",
     })
 
     --------------------------------------
@@ -198,25 +224,26 @@ function init_gear_sets()
         ammo="Coiste Bodhar",
         head="Blistering Sallet +1", --8%
         body="Ayanmo Corazza +2", --4%
-        hands="Aya. Manopolas +2", --4%
-        legs="Jhakri Slops +2", --2%
+        hands="Ayanmo Manopolas +2", --4%
+        legs="Malignance Tights", --9%
         feet="Chironic Slippers", --3%
-        neck="Sanctity Necklace",
+        neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
-        left_ear="Brutal Earring",
+        left_ear="Cessance Earring",
         right_ear="Suppanomimi",
         left_ring="Cho'j Band",
         right_ring="Rajas Ring",
-        back="Atheling Mantle",
+        back=gear.Sucellos.STP,
     }
 
     sets.engaged.Acc1 = set_combine(sets.engaged, {
         feet="Nyame Sollerets",
+        neck="Sanctity Necklace",
     })
 
     sets.engaged.Acc2 = set_combine(sets.engaged.Acc1, {
-        head="Aya. Zucchetto +2",
-        feet="Aya. Gambieras +2",
+        head="Ayanmo Zucchetto +2",
+        feet="Ayanmo Gambieras +2",
     })
 
     --------------------------------------
@@ -254,26 +281,26 @@ function init_gear_sets()
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
-        ammo="Ginsen",
+        ammo="Coiste Bodhar",
         head="Viti. Chapeau +2", -- 3% WSD, 47 att
-        body="Jhakri Robe +2",
+        body="Vitiation Tabard +3",
         hands="Jhakri Cuffs +2",
         legs="Jhakri Slops +2",
         feet="Jhakri Pigaches +2",
-        neck="Sanctity Necklace",
+        neck="Anu Torque",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
-        right_ear=Moonshade,
-        left_ring="Cho'j Band",
-        right_ring="Rajas Ring",
-        back="Atheling Mantle",
+        right_ear=gear.Moonshade,
+        left_ring="Rajas Ring",
+        right_ring="Ilabrat Ring",
+        back=gear.Sucellos.Cures,
     }
 
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        neck="Light Gorget",
-        waist="Light Belt",
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
     })
 
     -- prefers DEX, crit rate, and fTP
@@ -281,6 +308,8 @@ function init_gear_sets()
 
     -- 183 MAB, INT, DEX
     sets.precast.WS['Aeolian Edge'] = set_combine(sets.midcast.BlackMagic, {
+        neck="Sanctity Necklace",
+        waist="Eschan Stone",
     })
 
     sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.BlackMagic, {
@@ -384,7 +413,7 @@ function display_current_job_state(eventArgs)
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
     
     if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value
     end
     
     if state.Kiting.value == true then
@@ -398,8 +427,6 @@ function display_current_job_state(eventArgs)
     if state.SelectNPCTargets.value == true then
         msg = msg .. ', Target NPCs'
     end
-    
-    msg = msg .. ', TH: ' .. state.TreasureMode.value
 
     add_to_chat(122, msg)
 

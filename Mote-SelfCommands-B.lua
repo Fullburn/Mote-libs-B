@@ -316,7 +316,6 @@ function handle_naked(cmdParams)
     equip(sets.naked)
 end
 
-
 -------------------------------------------------------------------------------------------------------------------
 
 -- Get the state var that matches the requested name.

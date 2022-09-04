@@ -30,7 +30,7 @@ function job_setup()
     state.OffenseMode:options('Normal', 'Acc1', 'Acc2')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
-    state.DefenseMode:options('Evasion', 'PDT')
+    state.DefenseMode:options('Hybrid', 'None')
     state.CastingMode:options('Normal', 'MB', 'Potency', 'Macc')
 
     -- Augmented gear definitions
@@ -39,9 +39,16 @@ function job_setup()
     gear.Sucellos.Nuke = { name = "Sucellos's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',} }
     gear.Sucellos.STP = { name = "Sucellos's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Store TP"+10','Phys. dmg. taken-10%',} }
     gear.Sucellos.WSD = { name = "Sucellos's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',} }
+    gear.Sucellos.ElementalWS = { name = "Sucellos's Cape", augments = { 'MND+20','Mag. Acc+20 /Mag. Dmg.+20','MND+10','Weapon skill damage +10%',} }
+
+    gear.ChironicHose = {}
+    gear.ChironicHose.Macc = { name = "Chironic Hose", augments={'Mag. Acc.+28','Enmity-5','INT+14',}}
 
     -- Additional local binds    
     send_command('bind f11 gs c cycle castingmode')
+
+    -- Buff tracking
+    state.Buff['Composure'] = buffactive['Composure'] or false
 
     select_default_macro_book()
 end
@@ -81,15 +88,14 @@ function init_gear_sets()
     --------------------------------------
 
     sets.midcast.Enfeebling_MND = {
-        main="Marin Staff +1",
-        sub="Enki Strap",
-        ammo="Ombre Tathlum +1",
+        main="Crocea Mors",
+        
         head="Viti. Chapeau +2",
         body="Atrophy Tabard +3",
         hands="Nyame Gauntlets",
-        legs="Atrophy Tights +2",
+        legs=gear.ChironicHose.Macc,
         feet="Vitiation Boots +3",
-        neck="Erra Pendant",
+        neck="Duelist's Torque +1",
         waist="Obstinate Sash",
         left_ear="Snotra Earring",
         right_ear="Malignance Earring",
@@ -109,15 +115,14 @@ function init_gear_sets()
     sets.midcast.SelfCure = set_combine(sets.midcast.Cure, { left_ring="Vocane Ring" })
 
     sets.midcast.Enfeebling_INT = {
-        main="Marin Staff +1",
-        sub="Enki Strap",
-        ammo="Ombre Tathlum +1",
+        main="Crocea Mors",
+        ammo="Ghastly Tathlum +1",
         head="Viti. Chapeau +2",
         body="Atrophy Tabard +3",
         hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
+        legs=gear.ChironicHose.Macc,
         feet="Vitiation Boots +3",
-        neck="Erra Pendant",
+        neck="Duelist's Torque +1",
         waist="Acuity Belt +1",
         left_ear="Snotra Earring",
         right_ear="Malignance Earring",
@@ -133,10 +138,14 @@ function init_gear_sets()
     })
 
     sets.midcast.BlackMagic = set_combine(sets.midcast.Enfeebling_INT, {
+        main="Marin Staff +1",
+        sub="Enki Strap",
+        ammo="Ghastly Tathlum +1",
         head="Jhakri Coronal +2",
         body="Jhakri Robe +2",
         hands="Jhakri Cuffs +2",
-        neck="Sanctity Necklace",
+        legs="Jhakri Slops +2",
+        neck="Sibyl Scarf",
         left_ear="Hecate's Earring",
         right_ear="Malignance Earring",
         right_ring="Shiva Ring +1",
@@ -159,21 +168,31 @@ function init_gear_sets()
         back=gear.Sucellos.Cures,
     }
 
-    sets.midcast.Temper = set_combine(sets.midcast['Enhancing Magic'], {
-        hands="Vitiation Gloves +2",
+    sets.midcast.ComposureOther = set_combine(sets.midcast['Enhancing Magic'], {
+        head="Lethargy Chappel +1",
+        body="Lethargy Sayon +1",
+        legs="Lethargy Fuseau +1",
     })
 
     sets.midcast.Refresh = set_combine(sets.midcast['Enhancing Magic'], {
         body="Atrophy Tabard +3",
-        legs="Lethargy Fuseau",
+        legs="Lethargy Fuseau +1",
     })
 
+    sets.midcast.Enspell = set_combine(sets.midcast['Enhancing Magic'], {
+        hands="Vitiation Gloves +3",
+        back="Ghostfyre Cape",
+    })
+
+    sets.midcast.Temper = sets.midcast.Enspell
+
     sets.midcast.Stoneskin = set_combine(sets.midcast['Enhancing Magic'], {
+        hands="Vitiation Gloves +3",
         waist="Siegel Sash",
     })
 
     sets.midcast.Gain = set_combine(sets.midcast['Enhancing Magic'], {
-        hands="Vitiation Gloves +2",
+        hands="Vitiation Gloves +3",
     })
 
     sets.midcast['Dark Magic'] = set_combine(sets.midcast.BlackMagic, {
@@ -206,10 +225,9 @@ function init_gear_sets()
         hands="Volte Gloves",
         legs="Carmine Cuisses +1",
         feet="Nyame Sollerets",
-        neck="Sanctity Necklace",
+        neck="Sibyl Scarf",
         waist="Sailfi Belt +1",
         left_ear="Influx Earring",
-        right_ear="Phawaylla Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Vocane Ring",
         back=gear.Sucellos.Cures,
@@ -222,7 +240,8 @@ function init_gear_sets()
     -- Normal melee group, max haste + DW + multiattack
     sets.engaged = {
         ammo="Coiste Bodhar",
-        head="Blistering Sallet +1", --8%
+        head="Malignance Chapeau",
+        --head="Blistering Sallet +1", --8%
         body="Ayanmo Corazza +2", --4%
         hands="Ayanmo Manopolas +2", --4%
         legs="Malignance Tights", --9%
@@ -243,7 +262,6 @@ function init_gear_sets()
 
     sets.engaged.Acc2 = set_combine(sets.engaged.Acc1, {
         head="Ayanmo Zucchetto +2",
-        feet="Ayanmo Gambieras +2",
     })
 
     --------------------------------------
@@ -251,13 +269,18 @@ function init_gear_sets()
     --------------------------------------
 
     sets.weapons.Sword = {
+        main="Crocea Mors",
+        sub="Beatific Shield +1",
+    }
+
+    sets.weapons.Savage = {
         main="Naegling",
         sub="Beatific Shield +1",
     }
 
     sets.weapons.DualSword = {
-        main="Naegling",
-        sub="Demersal Degen +1",
+        main="Crocea Mors",
+        sub="Kaja Knife",
     }
 
     sets.weapons.Dagger = {
@@ -267,7 +290,7 @@ function init_gear_sets()
 
     sets.weapons.DualDagger = {
         main="Kaja Knife",
-        sub="Demersal Degen +1",
+        sub="Naegling",
     }
 
     sets.weapons.Club = {
@@ -287,7 +310,7 @@ function init_gear_sets()
         hands="Jhakri Cuffs +2",
         legs="Jhakri Slops +2",
         feet="Jhakri Pigaches +2",
-        neck="Anu Torque",
+        neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
@@ -306,13 +329,16 @@ function init_gear_sets()
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Evisceration'] = sets.precast.WS['Chant dy Cygne']
 
-    -- 183 MAB, INT, DEX
-    sets.precast.WS['Aeolian Edge'] = set_combine(sets.midcast.BlackMagic, {
-        neck="Sanctity Necklace",
-        waist="Eschan Stone",
+    -- Magical WS
+    sets.precast.WS.ElementalWS = set_combine(sets.midcast.BlackMagic, {
+        neck="Fotia Gorget",
+        waist="Fotia Belt",
+        left_ear=gear.Moonshade,
+        back=gear.Sucellos.ElementalWS,
     })
 
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.BlackMagic, {
+    sets.precast.WS['Sanguine Blade'] = set_combine(sets.precast.WS.ElementalWS, {
+        waist="Eschan Stone",
     })
 
     --------------------------------------
@@ -336,6 +362,13 @@ function init_gear_sets()
         right_ring="Vocane Ring", --7%
         back="Shadow Mantle",
     }
+
+    sets.defense.Hybrid = set_combine(sets.defense, {
+        head="Malignance Chapeau",
+        hands="Malignance Gloves",
+        legs="Malignance Tights",
+        feet="Malignance Boots",
+    })
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -373,6 +406,10 @@ end
 
 -- Custom spell mapping, for when more than just the spell name matters (targets, buffs, etc.)
 function job_get_spell_map(spell, default_spell_map)
+    if spell.skill == 'Enhancing Magic' and spell.target.type ~= 'SELF' and state.Buff['Composure'] then
+        return 'ComposureOther'
+    end
+
     -- if spell.action_type == 'Magic' then
     --     if default_spell_map == 'Cure' or default_spell_map == 'Curaga' then
     --         if (world.weather_element == 'Light' or world.day_element == 'Light') then

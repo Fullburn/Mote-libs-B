@@ -62,10 +62,14 @@ function init_gear_sets()
         legs="Pteroslaver Brais +2",
     })
 
-    sets.precast.JA['Spirit Jump'] = set_combine(sets.precast.JA.Jump, {})
+    sets.precast.JA['Spirit Jump'] = set_combine(sets.precast.JA.Jump, {
+        legs="Peltast's Cuissots +1",
+        feet="Peltast's Schynbalds +1",
+    })
     
     sets.precast.JA['Soul Jump'] = set_combine(sets.precast.JA.Jump, {
         body="Vishap Mail +1",
+        legs="Peltast's Cuissots +1",
     })
 
     sets.precast.JA.Angon = {
@@ -141,7 +145,7 @@ function init_gear_sets()
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
-        ammo="Ginsen"
+        ammo="Falcon Eye",
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
@@ -154,7 +158,7 @@ function init_gear_sets()
     --------------------------------------
 
     sets.weapons.Lance = {
-        main="Kaja Lance",
+        main="Shining One",
         sub="Utu Grip",
     }
 
@@ -184,7 +188,6 @@ function init_gear_sets()
         body="Sulevia's Platemail +2",
         hands="Pteroslaver Finger Gauntlets +3",
         legs="Vishap Brais +3",
-         -- legs="Sulevia's Cuisses +2",
         feet="Sulevia's Leggings +2",
         neck="Dragoon's Collar +1",
         waist="Sailfi Belt +1",
@@ -196,12 +199,14 @@ function init_gear_sets()
     }
 
     sets.precast.WS["Camlann's Torment"] = set_combine(sets.precast.WS, {
+        body="Nzingha Cuirass",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
 
     -- prefers STR and fTP
     sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {
+        legs="Sulevia's Cuisses +2",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -210,7 +215,7 @@ function init_gear_sets()
     sets.precast.WS['Drakesbane'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
         body="Gleti's Cuirass",
-        legs="Gleti's Breeches",
+        legs="Peltast's Cuissots +1",
     })
 
     --------------------------------------
@@ -232,7 +237,10 @@ function init_gear_sets()
 
     sets.midcast.Pet['Elemental Breath'] = {
         head="Pteroslaver Armet +3",
+        body="Gleti's Cuirass",
+        hands="Gleti's Gauntlets",
         legs="Vishap Brais +3",
+        feet="Gleti's Boots",
     }
 
     --------------------------------------

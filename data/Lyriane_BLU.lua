@@ -27,18 +27,25 @@ end
 function job_setup()
     include('Mote-TreasureHunter')
 
+    state.Buff['Chain Affinity'] = buffactive['chain affinity'] or false
+    state.Buff['Burst Affinity'] = buffactive['burst affinity'] or false
+    state.Buff['Efflux'] = buffactive['efflux'] or false
+    state.Buff['Diffusion'] = buffactive['efflux'] or false
+
     -- Mode definitions
     state.WeaponsMode:options('Sword', 'Club', 'Nuke', 'Tank', 'None')
     state.OffenseMode:options('Normal', 'Acc', 'Subtle')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
-    state.DefenseMode:options('PDT')
+    state.DefenseMode:options('Hybrid', 'None')
     state.CastingMode:options('Normal', 'Acc1', 'Potency')
 
     -- Augmented gear definitions
     gear.Rosmerta = {}
-    gear.Rosmerta.WSD = { name = "Rosmerta's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',} }
-    gear.Rosmerta.DA = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','STR+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',} }
+    gear.Rosmerta.WSD = { name = "Rosmerta's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
+    gear.Rosmerta.DA = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','STR+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',}}
+    gear.Rosmerta.MAB = { name="Rosmerta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10','Spell interruption rate down-10%',}}
+    gear.Rosmerta.Eva = { name="Rosmerta's Cape", augments={'AGI+20'}}-- Eva +45, MEva +20, FC +10%
 
     -- Additional local binds    
     send_command('bind f11 gs c cycle castingmode')
@@ -57,6 +64,21 @@ end
 
 -- Define sets and vars used by this job file.
 function init_gear_sets()
+--[[
+TODO gearsets!
+Fast Cast: 
+    Carmine Mask +1
+    Rosmerta's
+
+Defense mode full tank:
+    Rosmerta's
+
+Subtle Blow:
+    Bathy Choker +1
+    Expeditious Pinion
+    Adhemar Bonnet +1
+--]]
+
     --------------------------------------
     -- Idle / Resting sets
     --------------------------------------
@@ -64,11 +86,11 @@ function init_gear_sets()
     sets.idle = { 
         ammo="Coiste Bodhar",
         head="Gleti's Mask",
-        body="Jhakri Robe +2",
+        body="Hashishin Mintan +2",
         hands="Gleti's Gauntlets",
         legs="Carmine Cuisses +1",
         feet="Gleti's Boots",
-        neck="Sanctity Necklace",
+        neck="Sibyl Scarf",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear="Suppanomimi",
@@ -89,7 +111,9 @@ function init_gear_sets()
     -- Normal melee group, max haste + DW + multiattack + crit + attack
     sets.engaged = {
         ammo="Coiste Bodhar",
-        head="Blistering Sallet +1", --8%
+        head="Malignance Chapeau",
+        --head="Hashishin Kavuk +2",
+        --head="Blistering Sallet +1", --8%
         body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
         legs="Malignance Tights", --9%
@@ -104,18 +128,16 @@ function init_gear_sets()
     }
 
     sets.engaged.Acc1 = set_combine(sets.engaged, {
+        head="Hashishin Kavuk +2",
         body="Ayanmo Corazza +2", 
-        feet="Aya. Gambieras +2", --3%
     })
 
     sets.engaged.Acc2 = set_combine(sets.engaged.Acc1, {
-        ammo="Ginsen",
-        head="Aya. Zucchetto +2", --6%
-        feet="Assim. Charuqs +2",
+        ammo="Falcon Eye",
     })
 
     sets.engaged.Acc3 = set_combine(sets.engaged.Acc2, {
-        hands="Aya. Manopolas +2",
+        hands="Hashishin Bazubands +2",
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
@@ -134,13 +156,13 @@ function init_gear_sets()
     }
 
     sets.weapons.Club = {
-        main="Kaja Club",
+        main="Kaja Rod",
         sub="Thibron",
     }
 
     sets.weapons.Nuke = {
-        main="Sakpata's Sword",
-        sub="Kaja Rod",
+        main="Naegling",
+        sub="Sakpata's Sword",
     }
 
     sets.weapons.Tank = {
@@ -155,12 +177,12 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Coiste Bodhar",
-        head="Jhakri Coronal +2",
+        head="Hashishin Kavuk +2",
         body="Assim. Jubbah +2",
         hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
+        legs="Hashishin Tayt +2",
         feet="Luhlaza Charuqs +2",
-        neck="Sanctity Necklace",
+        neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
@@ -178,9 +200,6 @@ function init_gear_sets()
         waist="Fotia Belt",
     })
 
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.BlackMagic, {
-    })
-
     --------------------------------------
     -- Defense sets
     --------------------------------------
@@ -196,27 +215,26 @@ function init_gear_sets()
         back=gear.Rosmerta.DA
     }
 
+    sets.defense.Hybrid = set_combine(sets.defense, {
+        head="Malignance Chapeau",
+        hands="Malignance Gloves",
+        legs="Malignance Tights",
+        feet="Malignance Boots",
+    })
+
     --------------------------------------
     -- Precast sets
     --------------------------------------
 
     -- Precast sets to enhance JAs
-    sets.precast.JA.ChainAffinity = { feet="Assim. Charuqs +2" }
-    sets.precast.JA['Burst Affinity'] = { }
-    sets.precast.JA.Efflux = { }
     sets.precast.JA['Azure Lore'] = { }
 
-    --sets.precast.JA.Provoke = set_combine(sets.BlueMagic.Enmity, {})
-    --sets.precast.JA.Warcry = set_combine(sets.BlueMagic.Enmity, {})
-
-    -- Fast cast sets for spells
+    -- Fast cast sets for spells - 15 from Erratic Flutter + JP gifts, 10 from Sakpata's
     sets.precast.FC = {
-        head="Jhakri Coronal +2", --1 (set bonus)
-        body="Hashishin Mintan +1", -- 14
-        hands="Hashishin Bazubands +1", -- (recast bonus if not replaced)
-        legs="Aya. Cosciales +2", -- 6
-        feet=gear.HerculeanFeet.FC, -- 4
-        left_ring="Jhakri Ring", -- 1 (set bonus)
+        body="Hashishin Mintan +2", -- 15
+        hands="Hashishin Bazubands +2", -- (recast bonus if not replaced midcast)
+        legs="Ayanmo Cosciales +2", -- 6
+        feet="Herculean Boots", -- 7
         right_ring="Kishar Ring", -- 4
         right_ear="Loquacious Earring", -- 2
     }
@@ -227,31 +245,65 @@ function init_gear_sets()
     -- Midcast sets
     --------------------------------------
 
-    sets.midcast.Blue_Physical_STR = sets.precast.WS
-    sets.midcast.Blue_Physical_DEX = sets.precast.WS
-    sets.midcast.Blue_Physical_VIT = set_combine(sets.precast.WS, sets.defense)
-    sets.midcast.Blue_Physical_AGI = sets.precast.WS
-    sets.midcast.Blue_Physical_Other = sets.precast.WS
+    sets.buff.ChainAffinity = {
+        head="Hashishin Kavuk +2",
+        feet="Assimilator's Charuqs +2",
+    }
 
-    sets.midcast.Blue_Stun = sets.engaged.Acc2
+    sets.buff.Efflux = {
+        legs="Hashishin Tayt +2",
+    }
+
+    sets.buff.BurstAffinity = {
+        feet="Hashishin Basmak +2",
+    }
+
+    sets.buff.Diffusion = {
+        feet="Luhlaza Charuqs +2",
+    }
+
+    sets.midcast.Blue_Physical_STR = set_combine(sets.precast.WS, {
+        hands="Hashishin Bazubands +2",
+        --ring/ear needed
+    })
+
+    sets.midcast.Blue_Physical_DEX = sets.midcast.Blue_Physical_STR
+    sets.midcast.Blue_Physical_VIT = set_combine(sets.midcast.Blue_Physical_STR, sets.defense)
+    sets.midcast.Blue_Physical_AGI = sets.midcast.Blue_Physical_STR
+    sets.midcast.Blue_Physical_Other = sets.midcast.Blue_Physical_STR
+
+    sets.midcast.Blue_Stun = {
+        --ammo = "Pemphredo Tathlum",
+        head="Hashishin Kavuk +2",
+        body="Luhlaza Jubbah +1",
+        hands="Hashishin Bazubands +2",
+        legs="Hashishin Tayt +2",
+        feet="Luhlaza Charuqs +2",
+        neck="Sanctity Necklace",
+        waist="Acuity Belt +1",
+        left_ear = "Hermetic Earring",
+        left_ring="Metamorph Ring +1",
+        back=gear.Rosmerta.MAB,
+    }
 
     sets.midcast.Blue_Magical_INTMAB = {
-        ammo="Ombre Tathlum +1",
-        head="Jhakri Coronal +2",
-        body="Jhakri Robe +2",
-        hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
-        feet="Jhakri Pigaches +2",
-        neck="Sanctity Necklace",
+        ammo="Ghastly Tathlum +1",
+        head="Hashishin Kavuk +2",
+        body="Hashishin Mintan +2",
+        hands="Hashishin Bazubands +2",
+        legs="Hashishin Tayt +2",
+        feet="Hashishin Basmak +2",
+        neck="Sibyl Scarf",
         waist="Acuity Belt +1",
         left_ear="Hecate's Earring",
         right_ear="Novio Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Shiva Ring +1",
-        back="Izdubar Mantle",
+        back=gear.Rosmerta.MAB,
     }
 
     sets.midcast.Blue_Magical_MACC = set_combine(sets.midcast.Blue_Magical_INTMAB, {
+        neck="Erra Pendant",
         left_ear="Hermetic Earring",
     })
 
@@ -261,14 +313,12 @@ function init_gear_sets()
     sets.midcast.Blue_Magical_Other = sets.midcast.Blue_Magical_INTMAB
 
     sets.midcast.Blue_Cure = {
-        head="Aya. Zucchetto +2",
+        head="Hashishin Kavuk +2",
         body="Ayanmo Corazza +2",
         hands="Weath. Cuffs +1",
-        legs="Aya. Cosciales +2",
-        feet="Aya. Gambieras +2",
-        --waist="",
+        legs="Hashishin Tayt +2",
+        feet="Hashishin Basmak +2",
         left_ear="Influx Earring",
-        --right_ear="",
         left_ring="Metamorph Ring +1",
         right_ring="Naji's Loop",
     }
@@ -277,7 +327,9 @@ function init_gear_sets()
 
     sets.midcast.Blue_Skill = {
         ammo="Mavi Tathlum",
+        head="Luhlaza Keffiyeh +1",
         body="Assim. Jubbah +2",
+        legs="Hashishin Tayt +2",
         feet="Luhlaza Charuqs +2",
     }
 
@@ -285,6 +337,11 @@ function init_gear_sets()
         hands="Hashishin Bazubands +1",
     })
 
+    -- Sanguine needs to inherit magical set
+    sets.precast.WS.ELementalWS = set_combine(sets.midcast.Blue_Magical_INTMAB, {})
+
+    sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.Blue_Magical_INTMAB, {})
+    
     --------------------------------------
     -- Special sets (required by rules)
     --------------------------------------
@@ -301,12 +358,38 @@ end
 -- end
 
 -- Run after the general midcast() set is constructed.
--- function job_post_midcast(spell, action, spellMap, eventArgs)
--- end
+-- Overwrites pieces for specific JA that buff spells.
+function job_post_midcast(spell, action, spellMap, eventArgs)
+    if spell.type == 'BlueMagic' then
+        if state.Buff['Diffusion'] then
+            equip(sets.buff.Diffusion)
+        elseif state.Buff['Burst Affinity'] then
+            equip(sets.buff.BurstAffinity)
+            add_to_chat(123, "BA set!")
+        else
+            if state.Buff['Chain Affinity'] then
+                equip(sets.buff.ChainAffinity)
+                add_to_chat(123, "CA set!")
+            end
 
--- -- Set eventArgs.handled to true if we don't want any automatic gear equipping to be done.
--- function job_aftercast(spell, action, spellMap, eventArgs)
--- end
+            if state.Buff['Efflux'] then
+                equip(sets.buff.Efflux)
+                add_to_chat(123, "Flux set!")
+            end
+        end
+    end
+end
+
+-- Set eventArgs.handled to true if we don't want any automatic gear equipping to be done.
+function job_aftercast(spell, action, spellMap, eventArgs)
+    -- Attack spells wipe Chain/Burst//Efflux.  Turn those state vars off before default gearing is attempted.
+    if spell.type == 'BlueMagic' and not spell.interrupted then
+        state.Buff['Chain Affinity'] = false
+        state.Buff['Burst Affinity'] = false
+        state.Buff['Efflux'] = false
+        state.Buff['Diffusion'] = false
+    end
+end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Job-specific hooks for non-casting events.
@@ -331,18 +414,6 @@ function job_get_spell_map(spell, default_spell_map)
         return 'Blue_SelfCure'
     end
 end
-
--- function customize_idle_set(idleSet)
---     if player.hpp < 80 then
---         idleSet = set_combine(idleSet, sets.ExtraRegen)
---     end
-
---     return idleSet
--- end
-
--- Called by the 'update' self-command.
--- function job_update(cmdParams, eventArgs)
--- end
 
 -- Function to display the current relevant user state when doing an update.
 -- Return true if display was handled, and you don't want the default info shown.
@@ -384,6 +455,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Utility functions specific to this job.
 -------------------------------------------------------------------------------------------------------------------
+
 
 -- Select default macro book on initial load or subjob change.
 function select_default_macro_book()

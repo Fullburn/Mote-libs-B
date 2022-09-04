@@ -40,7 +40,7 @@ function job_setup()
     -- Mode definitions
     state.WeaponsMode:options('Dagger', 'Boomerang', 'Acid', 'Sword', 'TH', 'None')
     state.OffenseMode:options('Normal', 'Acc', 'Subtle')
-    state.DefenseMode:options('Evasion', 'PDT')
+    state.DefenseMode:options('Hybrid', 'None')
     state.DefenseLevel:options('Off', 'On')
 
     -- Augmented gear definitions
@@ -143,19 +143,17 @@ function init_gear_sets()
         --body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
         legs="Pillager's Culottes +3", --6%
-        feet="Malignance Boots",
+        feet="Plunderer's Poulaines +2",
         neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
         left_ear="Cessance Earring",
-        right_ear="Brutal Earring",
+        right_ear="Skulker's Earring",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
         back=gear.Toutatis.DW,
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
-        body="Mummu Jacket +2",
-        hands="Mummu Wrists +2",
         neck="Sanctity Necklace",
     })
 
@@ -210,10 +208,10 @@ function init_gear_sets()
         hands=gear.AdhemarWrists.Attack,
         legs="Pillager's Culottes +3",
         feet="Gleti's Boots",
-        neck="Anu Torque",
+        neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
-        left_ear="Brutal Earring",
-        right_ear=gear.Moonshade,
+        left_ear=gear.Moonshade,
+        right_ear="Skulker's Earring",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
         back=gear.Toutatis.WSD,
@@ -229,7 +227,7 @@ function init_gear_sets()
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Evisceration'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        body="Mummu Jacket +2",
+        body="Gleti's Cuirass +2",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -241,6 +239,7 @@ function init_gear_sets()
         hands="Nyame Gauntlets",
         legs="Nyame Flanchard",
         feet="Nyame Sollerets",
+        neck="Sibyl Scarf",
         left_ear="Hecate's Earring",
         right_ear="Novio Earring",
         left_ring="Beithir Ring",
@@ -280,6 +279,14 @@ function init_gear_sets()
         right_ring="Vocane Ring", --7%
         back=gear.Toutatis.DW, --10%
     }
+    
+    sets.defense.Hybrid = set_combine(sets.defense, {
+        head="Malignance Chapeau",
+        hands="Malignance Gloves",
+        legs="Malignance Tights",
+        feet="Malignance Boots",
+    })
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -297,7 +304,7 @@ end
 
 -- Run after the general midcast() set is constructed.
 function job_post_midcast(spell, action, spellMap, eventArgs)
-    if state.TreasureMode.value ~= 'None' and (spell.action_type == 'Ranged Attack' or spell.english == "Sleepga") then
+    if state.TreasureMode.value ~= 'None' and (spell.action_type == 'Ranged Attack' or spell.action_type == "Magic") then
         TH_for_first_hit(true)
     end
 end

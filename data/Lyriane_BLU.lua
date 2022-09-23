@@ -45,7 +45,7 @@ function job_setup()
     gear.Rosmerta.WSD = { name = "Rosmerta's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
     gear.Rosmerta.DA = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','STR+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',}}
     gear.Rosmerta.MAB = { name="Rosmerta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10','Spell interruption rate down-10%',}}
-    gear.Rosmerta.Eva = { name="Rosmerta's Cape", augments={'AGI+20'}}-- Eva +45, MEva +20, FC +10%
+    gear.Rosmerta.Eva = { name="Rosmerta's Cape", augments={'AGI+20'}}-- Eva +45, MEva +20, FC +10%, (Counter +10 instead of 15 eva?)
 
     -- Additional local binds    
     send_command('bind f11 gs c cycle castingmode')
@@ -67,7 +67,7 @@ function init_gear_sets()
 --[[
 TODO gearsets!
 Fast Cast: 
-    Carmine Mask +1
+    Amalric Coif +1   -- 16m also gives Refresh Potency!!!
     Rosmerta's
 
 Defense mode full tank:
@@ -77,6 +77,11 @@ Subtle Blow:
     Bathy Choker +1
     Expeditious Pinion
     Adhemar Bonnet +1
+
+Cursna received set:
+
+
+
 --]]
 
     --------------------------------------
@@ -118,7 +123,7 @@ Subtle Blow:
         hands=gear.AdhemarWrists.Attack, --5%
         legs="Malignance Tights", --9%
         feet="Malignance Boots", --3%
-        neck="Sanctity Necklace",
+        neck="Republican Platinum Medal",
         waist="Sailfi Belt +1", --9%
         left_ear="Cessance Earring",
         right_ear="Suppanomimi",
@@ -141,6 +146,7 @@ Subtle Blow:
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
+        head="Volte Tiara", --6
         hands="Luhlaza Bazubands +1", --9
         right_ring="Rajas Ring", --5
         feet="Volte Spats" --9
@@ -275,7 +281,7 @@ Subtle Blow:
     sets.midcast.Blue_Stun = {
         --ammo = "Pemphredo Tathlum",
         head="Hashishin Kavuk +2",
-        body="Luhlaza Jubbah +1",
+        body="Luhlaza Jubbah +3",
         hands="Hashishin Bazubands +2",
         legs="Hashishin Tayt +2",
         feet="Luhlaza Charuqs +2",
@@ -327,14 +333,14 @@ Subtle Blow:
 
     sets.midcast.Blue_Skill = {
         ammo="Mavi Tathlum",
-        head="Luhlaza Keffiyeh +1",
+        head="Luhlaza Keffiyeh +2",
         body="Assim. Jubbah +2",
         legs="Hashishin Tayt +2",
         feet="Luhlaza Charuqs +2",
     }
 
     sets.midcast.Occultation = set_combine(sets.midcast.Blue_Skill, {
-        hands="Hashishin Bazubands +1",
+        hands="Hashishin Bazubands +2",
     })
 
     -- Sanguine needs to inherit magical set
@@ -365,16 +371,13 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
             equip(sets.buff.Diffusion)
         elseif state.Buff['Burst Affinity'] then
             equip(sets.buff.BurstAffinity)
-            add_to_chat(123, "BA set!")
         else
             if state.Buff['Chain Affinity'] then
                 equip(sets.buff.ChainAffinity)
-                add_to_chat(123, "CA set!")
             end
 
             if state.Buff['Efflux'] then
                 equip(sets.buff.Efflux)
-                add_to_chat(123, "Flux set!")
             end
         end
     end

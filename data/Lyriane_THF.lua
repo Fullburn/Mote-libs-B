@@ -30,6 +30,7 @@ function job_setup()
     state.Buff['Sneak Attack'] = buffactive['sneak attack'] or false
     state.Buff['Trick Attack'] = buffactive['trick attack'] or false
     state.Buff['Feint'] = buffactive['feint'] or false
+    state.Buff['Conspirator'] = buffactive['conspirator'] or false
 
     -- For th_action_check():
     -- JA IDs for actions that always have TH: Provoke, Animated Flourish
@@ -70,17 +71,20 @@ function init_gear_sets()
     --------------------------------------
 
     -- Precast sets to enhance JAs
-    sets.precast.JA['Collaborator'] = { head="Skulker's Bonnet +1"}
-    sets.precast.JA['Accomplice'] = { head="Skulker's Bonnet +1"}
+    sets.precast.JA['Collaborator'] = { head="Skulker's Bonnet +2"}
+    sets.precast.JA['Accomplice'] = { head="Skulker's Bonnet +2"}
     sets.precast.JA['Flee'] = { feet="Pillager's Poulaines +1" }
     sets.precast.JA['Hide'] = { body="Pillager's Vest +3"}
-    sets.precast.JA['Conspirator'] = { body="Skulker's Vest +1" }
+    sets.precast.JA['Conspirator'] = { body="Skulker's Vest +2" }
     sets.precast.JA['Steal'] = { head="Plunderer's Bonnet", hands="Pillager's Armlets +1", legs="Pillager's Culottes +3", feet="Pillager's Poulaines +1" }
-    sets.precast.JA['Despoil'] = { legs="Skulker's Culottes +1", feet="Skulker's Poulaines +1"}
+    sets.precast.JA['Despoil'] = { legs="Skulker's Culottes +2", feet="Skulker's Poulaines +2"}
     sets.precast.JA['Perfect Dodge'] = { hands="Plunderer's Armlets +1"}
     sets.precast.JA['Feint'] = { legs="Plunderer's Culottes +1" }
 
-    sets.precast.JA['Sneak Attack'] = {}
+    sets.precast.JA['Sneak Attack'] = {
+        hands="Skulker's Armlets +2",
+    }
+
     sets.precast.JA['Trick Attack'] = {
         hands="Pillager's Armlets +1",
     }
@@ -135,10 +139,10 @@ function init_gear_sets()
     -- Combat sets
     --------------------------------------
 
-    -- Normal melee group, max haste + DW + multiattack
+    -- Normal melee group, max haste + DW + multiattack + stp
     sets.engaged = {
         ammo="Coiste Bodhar",
-        head="Blistering Sallet +1", --8%
+        head="Skulker's Bonnet +2", --8%
         body="Pillager's Vest +3", --4%
         --body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
@@ -158,6 +162,7 @@ function init_gear_sets()
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
+        head="Volte Tiara", --6
         feet="Mummu Gamash. +2", --9
         right_ring="Rajas Ring", --5
     })
@@ -167,19 +172,19 @@ function init_gear_sets()
     --------------------------------------
 
     sets.weapons.Dagger = {
-        main="Kaja Knife",
+        main="Tauret",
         sub="Gleti's Knife",
     }
 
     sets.weapons.Boomerang = {
-        main="Kaja Knife",
+        main="Tauret",
         sub="Gleti's Knife",
         range="Raider's Bmrng.",
         ammo="", -- Force the slot clear
     }
 
     sets.weapons.Acid = {
-        main="Kaja Knife",
+        main="Tauret",
         sub="Gleti's Knife",
         range="Exalted Crossbow",
         ammo="Acid Bolt",
@@ -191,7 +196,7 @@ function init_gear_sets()
     }
 
     sets.weapons.TH = {
-        main="Kaja Knife",
+        main="Tauret",
         sub="Gleti's Knife",
         ammo="Perfect Lucky Egg",
     }
@@ -203,8 +208,9 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Coiste Bodhar",
-        head="Pillager's Bonnet +2",
-        body=gear.AdhemarJacket.Attack,
+        head="Pillager's Bonnet +3",
+        body="Skulker's Vest +2",
+        --body=gear.AdhemarJacket.Attack,
         hands=gear.AdhemarWrists.Attack,
         legs="Pillager's Culottes +3",
         feet="Gleti's Boots",
@@ -226,8 +232,8 @@ function init_gear_sets()
 
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Evisceration'] = set_combine(sets.precast.WS, {
-        head="Blistering Sallet +1",
         body="Gleti's Cuirass +2",
+        legs="Pillager's Culottes +3",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -254,7 +260,7 @@ function init_gear_sets()
     sets.TreasureHunter = {
         --head="White Rarab Cap +1",
         hands="Plunderer's Armlets +1", 
-        feet="Skulker's Poulaines +1",
+        feet="Skulker's Poulaines +2",
     }
 
     sets.Kiting = { feet="Skadi's Jambeaux +1" }
@@ -337,6 +343,10 @@ end
 -------------------------------------------------------------------------------------------------------------------
 
 function customize_melee_set(meleeSet)
+    if state.Buff['Conspirator'] then
+        meleeSet = set_combine(meleeSet, sets.precast.JA['Conspirator'])
+    end
+
     local sata = get_sata_map()
     if sata ~= '' then
         meleeSet = set_combine(meleeSet, sets.custom[sata])

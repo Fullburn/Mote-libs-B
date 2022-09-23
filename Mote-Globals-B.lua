@@ -78,8 +78,14 @@ function global_on_load()
 	send_command('bind ^f12 gs c cycle EquipStop')
 	send_command('bind !f12 gs c update user')
 
-    send_command('bind !, fillmode 1')
-    send_command('bind !. fillmode 0')
+    -- send_command('bind !, fillmode 1')
+    -- send_command('bind !. fillmode 0')
+	send_command('bind numpad/ fillmode')
+
+	-- oh shit spells for all jobs
+	send_command('bind !, input /ma "Utsusemi: Ichi" <me>')
+    send_command('bind !. input /ma "Utsusemi: Ni" <me>')
+	send_command('bind !/ input /ma "Occultation" <me>')
 
     send_command('bind !e input /item "Echo Drops" <me>')
     send_command('bind !r input /item "Remedy" <me>')
@@ -106,6 +112,8 @@ function global_on_unload()
 
 	send_command('unbind !,')
 	send_command('unbind !.')
+	send_command('unbind !/')
+	send_command('unbind numpad/')
 	send_command('unbind !e')
 	send_command('unbind !r')
 	send_command('unbind !p')

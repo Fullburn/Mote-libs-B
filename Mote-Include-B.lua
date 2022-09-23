@@ -538,7 +538,7 @@ function get_idle_set(petStatus)
     end
 
     if state.DefenseLevel.value ~= 'Off' and state.DefenseLevel.value ~= 'EngagedOnly' then
-        idleSet = apply_defense(idleSet)    
+        idleSet = apply_defense(idleSet)
         idleSet = apply_kiting(idleSet)
     end
 
@@ -759,7 +759,6 @@ function get_midcast_set(spell, spellMap)
     equipSet = select_specific_set(equipSet, spell, spellMap)
     
     -- After the default checks, do checks for specialized modes (casting mode, etc).
-    
     if spell.action_type == 'Magic' then
         if equipSet[state.CastingMode.current] then
             equipSet = equipSet[state.CastingMode.current]
@@ -839,16 +838,15 @@ function get_weaponskill_set(equipSet, spell, spellMap)
         end
     end
 
-    local custom_wsmode
-
     -- Allow the job file to specify a preferred weaponskill mode
     if get_custom_wsmode then
+        local custom_wsmode
         custom_wsmode = get_custom_wsmode(spell, spellMap, ws_mode)
-    end
 
-    -- If the job file returned a weaponskill mode, use that.
-    if custom_wsmode then
-        ws_mode = custom_wsmode
+        -- If the job file returned a weaponskill mode, use that.
+        if custom_wsmode then
+            ws_mode = custom_wsmode
+        end
     end
 
     if equipSet[ws_mode] then

@@ -198,6 +198,8 @@ spell_maps = {
         'Temper', 'Temper II'},
     ['ElementalEnfeeble'] = S{
         'Burn', 'Frost', 'Choke', 'Rasp', 'Shock', 'Drown'},
+    ['Spikes'] = S{
+        'Blaze Spikes', 'Ice Spikes', 'Shock Spikes'},
 
     -- Songs
     ['Minuet'] = S{
@@ -312,6 +314,9 @@ spell_maps = {
     -- Wyvern Breaths
     ['Healing Breath'] = S{'Healing Breath', 'Healing Breath II', 'Healing Breath III', 'Healing Breath IV'},
     ['ElementalBreath'] = S{'Flame Breath', 'Frost Breath', 'Sand Breath', 'Hydro Breath', 'Gust Breath', 'Lightning Breath'},
+
+    -- Elemental WS
+    ['ElementalWS'] = S{'Burning Blade', 'Red Lotus Blade', 'Shining Blade', 'Seraph Blade', 'Sanguine Blade', 'Aeolian Edge'},
 }
 
 no_skill_spells_list = S{'Haste', 'Refresh', 'Regen', 'Protect', 'Protectra', 'Shell', 'Shellra',

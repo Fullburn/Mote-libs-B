@@ -59,17 +59,17 @@ function init_gear_sets()
     }
 
     sets.precast.JA['High Jump'] = set_combine(sets.precast.JA.Jump, {
-        legs="Pteroslaver Brais +2",
+        legs="Pteroslaver Brais +3",
     })
 
     sets.precast.JA['Spirit Jump'] = set_combine(sets.precast.JA.Jump, {
-        legs="Peltast's Cuissots +1",
-        feet="Peltast's Schynbalds +1",
+        legs="Peltast's Cuissots +2",
+        feet="Peltast's Schynbalds +2",
     })
     
     sets.precast.JA['Soul Jump'] = set_combine(sets.precast.JA.Jump, {
         body="Vishap Mail +1",
-        legs="Peltast's Cuissots +1",
+        legs="Peltast's Cuissots +2",
     })
 
     sets.precast.JA.Angon = {
@@ -131,7 +131,8 @@ function init_gear_sets()
     sets.engaged = {
         ammo="Coiste Bodhar", -- DA 3 / STP 3
         head="Pteroslaver Armet +3", --7% / TA 4
-        body="Flamma Korazin +2", --2% / STP 9
+        --body="Flamma Korazin +2", --2% / STP 9
+        body="Peltast's Plackart +2",
         hands="Flamma Manopolas +2", --4% / STP 6
         legs="Sulevia's Cuisses +2", --2% / TA 4
         feet="Flamma Gambieras +2", --2% / DA 6 / STP 6
@@ -149,6 +150,7 @@ function init_gear_sets()
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
+        head="Volte Tiara", --6
         hands="Sulevia's Gauntlets +2",
         feet="Volte Spats"
     })
@@ -184,8 +186,8 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Knobkierrie",
-        head="Pteroslaver Armet +3",
-        body="Sulevia's Platemail +2",
+        head="Peltast's Mezail +2",
+        body="Hjarrandi Breastplate",
         hands="Pteroslaver Finger Gauntlets +3",
         legs="Vishap Brais +3",
         feet="Sulevia's Leggings +2",
@@ -206,6 +208,7 @@ function init_gear_sets()
 
     -- prefers STR and fTP
     sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {
+        head="Pteroslaver Armet +3",
         legs="Sulevia's Cuisses +2",
         neck="Fotia Gorget",
         waist="Fotia Belt",
@@ -214,8 +217,8 @@ function init_gear_sets()
     -- prefers STR and crit rate; negative attack mul
     sets.precast.WS['Drakesbane'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        body="Gleti's Cuirass",
-        legs="Peltast's Cuissots +1",
+        body="Hjarrandi Breastplate",
+        legs="Peltast's Cuissots +2",
     })
 
     --------------------------------------
@@ -237,7 +240,7 @@ function init_gear_sets()
 
     sets.midcast.Pet['Elemental Breath'] = {
         head="Pteroslaver Armet +3",
-        body="Gleti's Cuirass",
+        body="Peltast's Plackart +2",
         hands="Gleti's Gauntlets",
         legs="Vishap Brais +3",
         feet="Gleti's Boots",

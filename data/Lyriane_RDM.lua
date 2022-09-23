@@ -26,7 +26,7 @@ end
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
     -- Mode definitions
-    state.WeaponsMode:options('None', 'Sword', 'DualSword', 'Dagger', 'DualDagger', 'Club')
+    state.WeaponsMode:options('None', 'Sword', 'Savage', 'DualSword', 'Dagger', 'DualDagger', 'Club')
     state.OffenseMode:options('Normal', 'Acc1', 'Acc2')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
@@ -75,11 +75,12 @@ function init_gear_sets()
 
     -- Fast cast sets for spells
     sets.precast.FC = {
-        head="Atro. Chapeau +2", -- 14
+        main="Crocea Mors", -- 20
+        head="Lethargy Chappel +2", -- 14 cast time? Does it stack?
         body="Vitiation Tabard +3", -- 16
         hands="Volte Gloves", --6
         legs="Ayanmo Cosciales +2", -- 6
-        left_ear="Loquacious Earring", -- 2
+        right_ear="Lethargy Earring", -- 7
         waist="Embla Sash", -- 5
     }
 
@@ -90,9 +91,9 @@ function init_gear_sets()
     sets.midcast.Enfeebling_MND = {
         main="Crocea Mors",
         
-        head="Viti. Chapeau +2",
-        body="Atrophy Tabard +3",
-        hands="Nyame Gauntlets",
+        head="Vitiation Chapeau +3",
+        body="Lethargy Sayon +2",
+        hands="Lethargy Gantherots +2",
         legs=gear.ChironicHose.Macc,
         feet="Vitiation Boots +3",
         neck="Duelist's Torque +1",
@@ -104,10 +105,15 @@ function init_gear_sets()
         back=gear.Sucellos.Cures,
     }
 
+    sets.midcast.Enfeebling_MND.Macc = set_combine(sets.midcast.Enfeebling_MND, {
+        body="Atrophy Tabard +3",
+    })
+
     sets.midcast.Cure = set_combine(sets.midcast.Enfeebling_MND, {
         main="Chatoyant Staff", --10%?
         sub="Enki Strap",
         hands={ name="Weath. Cuffs +1", augments={'MP+45',}}, --9%
+        feet="Lethargy Houseaux +2",
         right_ring="Naji's Loop",
     })
 
@@ -117,9 +123,9 @@ function init_gear_sets()
     sets.midcast.Enfeebling_INT = {
         main="Crocea Mors",
         ammo="Ghastly Tathlum +1",
-        head="Viti. Chapeau +2",
-        body="Atrophy Tabard +3",
-        hands="Jhakri Cuffs +2",
+        head="Vitiation Chapeau +3",
+        body="Lethargy Sayon +2",
+        hands="Lethargy Gantherots +2",
         legs=gear.ChironicHose.Macc,
         feet="Vitiation Boots +3",
         neck="Duelist's Torque +1",
@@ -132,19 +138,21 @@ function init_gear_sets()
     }
 
     sets.midcast.Enfeebling_INT.Potency = set_combine(sets.midcast.Enfeebling_INT, {
-        hands="Volte Gloves",
-        feet="Jhakri Pigaches +2",
         right_ring="Shiva Ring +1",
+    })
+
+    sets.midcast.Enfeebling_INT.Macc = set_combine(sets.midcast.Enfeebling_INT, {
+        body="Atrophy Tabard +3",
     })
 
     sets.midcast.BlackMagic = set_combine(sets.midcast.Enfeebling_INT, {
         main="Marin Staff +1",
         sub="Enki Strap",
         ammo="Ghastly Tathlum +1",
-        head="Jhakri Coronal +2",
-        body="Jhakri Robe +2",
-        hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
+        head="Lethargy Chappel +2",
+        body="Lethargy Sayon +2",
+        hands="Lethargy Gantherots +2",
+        legs="Lethargy Fuseau +2",
         neck="Sibyl Scarf",
         left_ear="Hecate's Earring",
         right_ear="Malignance Earring",
@@ -163,20 +171,21 @@ function init_gear_sets()
         body="Vitiation Tabard +3",
         hands="Atrophy Gloves +3",
         legs="Atrophy Tights +2",
-        feet="Lethargy Houseaux +1",
+        feet="Lethargy Houseaux +2",
         waist="Embla Sash",
+        right_ear="Lethargy Earring",
         back=gear.Sucellos.Cures,
     }
 
     sets.midcast.ComposureOther = set_combine(sets.midcast['Enhancing Magic'], {
-        head="Lethargy Chappel +1",
-        body="Lethargy Sayon +1",
-        legs="Lethargy Fuseau +1",
+        head="Lethargy Chappel +2",
+        body="Lethargy Sayon +2",
+        legs="Lethargy Fuseau +2",
     })
 
     sets.midcast.Refresh = set_combine(sets.midcast['Enhancing Magic'], {
         body="Atrophy Tabard +3",
-        legs="Lethargy Fuseau +1",
+        legs="Lethargy Fuseau +2",
     })
 
     sets.midcast.Enspell = set_combine(sets.midcast['Enhancing Magic'], {
@@ -195,6 +204,10 @@ function init_gear_sets()
         hands="Vitiation Gloves +3",
     })
 
+    sets.midcast.Spikes = set_combine(sets.midcast['Enhancing Magic'], {
+        legs="Vitiation Tights +2",
+    })
+
     sets.midcast['Dark Magic'] = set_combine(sets.midcast.BlackMagic, {
         neck = "Erra Pendant",
     })
@@ -207,7 +220,7 @@ function init_gear_sets()
         main="Chatoyant Staff",
         sub="Enki Strap",
         ammo="Homiliary",
-        head="Viti. Chapeau +2",
+        head="Vitiation Chapeau +3",
         body="Jhakri Robe +2",
         hands="Volte Gloves",
         legs="Nyame Flanchard",
@@ -220,7 +233,7 @@ function init_gear_sets()
 
     sets.idle = { 
         ammo="Homiliary",
-        head="Viti. Chapeau +2",
+        head="Vitiation Chapeau +3",
         body="Jhakri Robe +2",
         hands="Volte Gloves",
         legs="Carmine Cuisses +1",
@@ -228,6 +241,7 @@ function init_gear_sets()
         neck="Sibyl Scarf",
         waist="Sailfi Belt +1",
         left_ear="Influx Earring",
+        right_ear="Lethargy Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Vocane Ring",
         back=gear.Sucellos.Cures,
@@ -248,9 +262,9 @@ function init_gear_sets()
         feet="Chironic Slippers", --3%
         neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
-        left_ear="Cessance Earring",
-        right_ear="Suppanomimi",
-        left_ring="Cho'j Band",
+        left_ear="Brutal Earring",
+        right_ear="Cessance Earring",
+        left_ring="Ilabrat Ring",
         right_ring="Rajas Ring",
         back=gear.Sucellos.STP,
     }
@@ -280,17 +294,17 @@ function init_gear_sets()
 
     sets.weapons.DualSword = {
         main="Crocea Mors",
-        sub="Kaja Knife",
+        sub="Tauret",
     }
 
     sets.weapons.Dagger = {
-        main="Kaja Knife",
+        main="Tauret",
         sub="Beatific Shield +1",
     }
 
     sets.weapons.DualDagger = {
-        main="Kaja Knife",
-        sub="Naegling",
+        main="Tauret",
+        sub="Crocea Mors",
     }
 
     sets.weapons.Club = {
@@ -305,17 +319,17 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Coiste Bodhar",
-        head="Viti. Chapeau +2", -- 3% WSD, 47 att
+        head="Vitiation Chapeau +3", -- 6% WSD, 62 att
         body="Vitiation Tabard +3",
         hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
-        feet="Jhakri Pigaches +2",
+        legs="Lethargy Fuseau +2",
+        feet="Lethargy Houseaux +2",
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
-        left_ring="Rajas Ring",
-        right_ring="Ilabrat Ring",
+        left_ring="Ilabrat Ring",
+        right_ring="Rajas Ring",
         back=gear.Sucellos.Cures,
     }
 
@@ -331,13 +345,14 @@ function init_gear_sets()
 
     -- Magical WS
     sets.precast.WS.ElementalWS = set_combine(sets.midcast.BlackMagic, {
-        neck="Fotia Gorget",
-        waist="Fotia Belt",
+        -- neck="Fotia Gorget",
+        -- waist="Fotia Belt",
         left_ear=gear.Moonshade,
         back=gear.Sucellos.ElementalWS,
     })
 
     sets.precast.WS['Sanguine Blade'] = set_combine(sets.precast.WS.ElementalWS, {
+        neck="Sibyl Scarf",
         waist="Eschan Stone",
     })
 
@@ -365,6 +380,7 @@ function init_gear_sets()
 
     sets.defense.Hybrid = set_combine(sets.defense, {
         head="Malignance Chapeau",
+        body="Lethargy Sayon +2",
         hands="Malignance Gloves",
         legs="Malignance Tights",
         feet="Malignance Boots",

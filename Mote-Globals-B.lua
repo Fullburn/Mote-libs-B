@@ -48,6 +48,7 @@ function define_global_sets()
 
 	-- Definitions for global functionality
 	info.Incapacitated = S{ "terror", "petrification", "sleep", "stun"}
+	info.Doomed = S{"doom"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -131,6 +132,11 @@ function user_handle_equipping_gear (playerStatus, eventArgs)
 	if has_any_buff_of(info.Incapacitated) then
 		equip(apply_defense({}))
 		eventArgs.handled = true
+
+	-- And always put on the cursna set if doomed, as top priority
+	elseif has_any_buff_of(info.Doomed) then
+		equip(apply_cursna({}))
+		eventArgs.handled = true
 	end
 end
 
@@ -161,7 +167,21 @@ function user_buff_change(buff, gain, eventArgs)
 		end
 	end
 
-	if not midaction() and info.Incapacitated:contains(name) then
+	if name == 'doom' then
+		if gain then
+			send_command('input /p <me> DOOMED! X_X')
+		else
+			send_command('input /p <me> SAFE!')
+		end
+	elseif name == 'charm' then
+		if gain then
+			send_command('input /p <me> CHARMED! @_@')
+		else
+			send_command('input /p <me> SAFE!')
+		end
+	end
+
+	if not midaction() and (info.Incapacitated:contains(name) or info.Doomed:contains(name)) then
 		handle_equipping_gear(player.status)
 		eventArgs.handled = true
 	end

@@ -80,8 +80,12 @@ Subtle Blow:
 
 Cursna received set:
 
-
-
+General:
+    Stikini +1 (x1)
+    Mirage Stole +2
+    Pixie Hairpin +1
+    Hachirin no Obi
+    Aurist's Cape +1
 --]]
 
     --------------------------------------
@@ -89,7 +93,6 @@ Cursna received set:
     --------------------------------------
 
     sets.idle = { 
-        ammo="Coiste Bodhar",
         head="Gleti's Mask",
         body="Hashishin Mintan +2",
         hands="Gleti's Gauntlets",
@@ -116,12 +119,11 @@ Cursna received set:
     -- Normal melee group, max haste + DW + multiattack + crit + attack
     sets.engaged = {
         ammo="Coiste Bodhar",
-        head="Malignance Chapeau",
-        --head="Hashishin Kavuk +2",
+        head="Malignance Chapeau", --6%
         --head="Blistering Sallet +1", --8%
         body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
-        legs="Malignance Tights", --9%
+        legs="Samnuha Tights", --6% / STP 7, DA 3, TA 3
         feet="Malignance Boots", --3%
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1", --9%
@@ -163,7 +165,7 @@ Cursna received set:
 
     sets.weapons.Club = {
         main="Kaja Rod",
-        sub="Thibron",
+        sub="Daybreak",
     }
 
     sets.weapons.Nuke = {
@@ -182,11 +184,11 @@ Cursna received set:
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
-        ammo="Coiste Bodhar",
+        ammo="Oshasha's Treatise",
         head="Hashishin Kavuk +2",
-        body="Assim. Jubbah +2",
+        body="Assim. Jubbah +3",
         hands="Jhakri Cuffs +2",
-        legs="Hashishin Tayt +2",
+        legs="Luhlaza Shalwar +3",
         feet="Luhlaza Charuqs +2",
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
@@ -201,7 +203,7 @@ Cursna received set:
     sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
         hands=gear.AdhemarWrists.Attack,
-        feet="Gleti's Boots",
+        feet="Ayanmo Gambieras +2",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -217,6 +219,7 @@ Cursna received set:
         hands="Nyame Gauntlets", --7%
         legs="Nyame Flanchard", --8%
         feet="Nyame Sollerets", --7%
+        neck="Unmoving Collar +1",
         right_ring="Vocane Ring",
         back=gear.Rosmerta.DA
     }
@@ -314,11 +317,16 @@ Cursna received set:
     })
 
     sets.midcast.Blue_Magical_Light = sets.midcast.Blue_Magical_INTMAB
-    sets.midcast.Blue_Magical_Dark = sets.midcast.Blue_Magical_INTMAB
+    sets.midcast.Blue_Magical_Dark = set_combine(sets.midcast.Blue_Magical_INTMAB, {
+        head="Pixie Hairpin +1",
+        neck="Erra Pendant",
+    })
+
     sets.midcast.Blue_Magical_Earth = sets.midcast.Blue_Magical_INTMAB
     sets.midcast.Blue_Magical_Other = sets.midcast.Blue_Magical_INTMAB
 
     sets.midcast.Blue_Cure = {
+        main="Daybreak",
         head="Hashishin Kavuk +2",
         body="Ayanmo Corazza +2",
         hands="Weath. Cuffs +1",
@@ -330,11 +338,12 @@ Cursna received set:
     }
 
     sets.midcast.Blue_SelfCure = set_combine(sets.midcast.Blue_Cure, { left_ring="Vocane Ring" })
+    sets.midcast.Cure = set_combine(sets.midcast.Blue_Cure, {})
 
     sets.midcast.Blue_Skill = {
         ammo="Mavi Tathlum",
         head="Luhlaza Keffiyeh +2",
-        body="Assim. Jubbah +2",
+        body="Assim. Jubbah +3",
         legs="Hashishin Tayt +2",
         feet="Luhlaza Charuqs +2",
     }
@@ -344,15 +353,26 @@ Cursna received set:
     })
 
     -- Sanguine needs to inherit magical set
-    sets.precast.WS.ELementalWS = set_combine(sets.midcast.Blue_Magical_INTMAB, {})
+    sets.precast.WS.ELementalWS = set_combine(sets.midcast.Blue_Magical_INTMAB, {
+        hands="Jhakri Cuffs +2",
+        legs="Luhlaza Shalwar +3",
+    })
 
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.midcast.Blue_Magical_INTMAB, {})
+    sets.precast.WS['Sanguine Blade'] = set_combine(sets.precast.WS.ELementalWS, {
+        head="Pixie Hairpin +1",
+        waist="Eschan Stone",
+    })
     
     --------------------------------------
     -- Special sets (required by rules)
     --------------------------------------
 
     sets.Kiting = { legs="Carmine Cuisses +1" }
+
+    sets.Cursna = {
+        waist="Gishdubar Sash",
+        left_ring="Blenmot's Ring",
+    }
 end
 
 -------------------------------------------------------------------------------------------------------------------

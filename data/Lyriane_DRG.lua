@@ -14,9 +14,9 @@ end
 function job_setup()
     -- Mode definitions
     state.WeaponsMode:options('Lance', 'Sword', 'DualSword', 'Staff', 'None')
-    state.OffenseMode:options('Normal', 'Acc', 'Subtle')
+    state.OffenseMode:options('Normal', 'PDL', 'Acc', 'Subtle')
     state.RangedMode:options('Normal', 'Acc')
-    state.WeaponskillMode:options('Normal', 'Acc')
+    state.WeaponskillMode:options('Normal', 'PDL', 'Acc')
     state.DefenseMode:options('Evasion', 'PDT')
     state.DefenseLevel:options('Off', 'On')
 
@@ -54,8 +54,10 @@ function init_gear_sets()
 
     sets.precast.JA['Jump'] = {
         body="Pteroslaver Mail +3",
+        hands="Vishap Finger Gauntlets +1",
         feet="Vishap Greaves +2",
         neck="Dragoon's Collar +1",
+        right_ring="Regal Ring",
     }
 
     sets.precast.JA['High Jump'] = set_combine(sets.precast.JA.Jump, {
@@ -81,6 +83,7 @@ function init_gear_sets()
     sets.precast.JA['Call Wyvern'] = {
         body="Pteroslaver Mail +3",
         legs="Vishap Brais +3",
+        feet="Gleti's Boots",
         neck="Dragoon's Collar +1",
         left_ring="Dreki Ring",
     }
@@ -107,7 +110,6 @@ function init_gear_sets()
     --------------------------------------
 
     sets.idle = { 
-        ammo="Coiste Bodhar",
         head="Gleti's Mask",
         body="Gleti's Cuirass",
         hands="Gleti's Gauntlets",
@@ -131,7 +133,6 @@ function init_gear_sets()
     sets.engaged = {
         ammo="Coiste Bodhar", -- DA 3 / STP 3
         head="Pteroslaver Armet +3", --7% / TA 4
-        --body="Flamma Korazin +2", --2% / STP 9
         body="Peltast's Plackart +2",
         hands="Flamma Manopolas +2", --4% / STP 6
         legs="Sulevia's Cuisses +2", --2% / TA 4
@@ -140,19 +141,24 @@ function init_gear_sets()
         waist="Sailfi Belt +1", --9% / TA 2 / DA 5
         left_ear="Cessance Earring",
         right_ear="Brutal Earring", -- DA 5
-        left_ring="Flamma Ring", -- STP 5
+        left_ring="Dreki Ring", -- STP 5
         right_ring="Rajas Ring", -- STP 5
         back=gear.Brigantia.DA,
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
         ammo="Falcon Eye",
+        body="Vishap Mail +3",
+        right_ring="Regal Ring",
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
         head="Volte Tiara", --6
+        body="Flamma Korazin +2", --17
         hands="Sulevia's Gauntlets +2",
-        feet="Volte Spats"
+        legs="Sulevia's Cuisses +2", -- set bonus
+        feet="Volte Spats", --6
+        right_ear="Peltast's Earring", --5
     })
 
     --------------------------------------
@@ -187,27 +193,35 @@ function init_gear_sets()
     sets.precast.WS = {
         ammo="Knobkierrie",
         head="Peltast's Mezail +2",
-        body="Hjarrandi Breastplate",
+        body="Hjarrandi Breastplate", -- with Shining One ONLY
         hands="Pteroslaver Finger Gauntlets +3",
         legs="Vishap Brais +3",
         feet="Sulevia's Leggings +2",
         neck="Dragoon's Collar +1",
         waist="Sailfi Belt +1",
-        left_ear="Thrud Earring",
-        right_ear=gear.Moonshade,
+        left_ear=gear.Moonshade,
+        right_ear="Thrud Earring",
         left_ring="Beithir Ring",
-        right_ring="Rajas Ring",
+        right_ring="Regal Ring",
         back=gear.Brigantia.WSD,
     }
 
+    sets.precast.WS.PDL = set_combine(sets.precast.WS, {
+        body="Gleti's Cuirass",
+        right_ear="Peltast's Earring",
+    })
+
+    sets.precast.WS["Savage Blade"] = set_combine(sets.precast.WS, {
+        body="Gleti's Cuirass",
+    })
+
     sets.precast.WS["Camlann's Torment"] = set_combine(sets.precast.WS, {
-        body="Nzingha Cuirass",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
 
     -- prefers STR and fTP
-    sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {
+    sets.precast.WS.Stardiver = set_combine(sets.precast.WS, {
         head="Pteroslaver Armet +3",
         legs="Sulevia's Cuisses +2",
         neck="Fotia Gorget",
@@ -215,27 +229,37 @@ function init_gear_sets()
     })
 
     -- prefers STR and crit rate; negative attack mul
-    sets.precast.WS['Drakesbane'] = set_combine(sets.precast.WS, {
+    sets.precast.WS.Drakesbane = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        body="Hjarrandi Breastplate",
+        hands="Gleti's Gauntlets",
         legs="Peltast's Cuissots +2",
+        feet="Gleti's Boots",
     })
 
     --------------------------------------
     -- Special sets (required by rules)
     --------------------------------------
 
+    sets.Kiting = { legs="Carmine Cuisses +1" }
+
+    sets.Cursna = {
+        waist="Gishdubar Sash",
+        left_ring="Blenmot's Ring",
+    }
+
     -- breath sets!
     sets.midcast.BreathTrigger = {
         head="Vishap Armet +1",
         hands="Despair Finger Gauntlets",
         legs="Vishap Brais +3",
+        feet="Pteroslaver Greaves +3",
     }
 
     sets.midcast.Pet['Healing Breath'] = {
         head="Pteroslaver Armet +3",
         hands="Despair Finger Gauntlets",
         legs="Vishap Brais +3",
+        feet="Pteroslaver Greaves +3",
     }
 
     sets.midcast.Pet['Elemental Breath'] = {

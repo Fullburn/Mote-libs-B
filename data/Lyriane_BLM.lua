@@ -26,25 +26,16 @@ end
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
     -- Mode definitions
-    state.WeaponsMode:options('None', 'Sword', 'Savage', 'DualSword', 'Seraph', 'Dagger', 'DualDagger', 'Club')
+    state.WeaponsMode:options('None', 'Dagger', 'Staff', 'Club')
     state.OffenseMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
-    state.DefenseMode:options('Hybrid', 'None')
+    state.DefenseMode:options('None')
     state.CastingMode:options('Normal', 'MB', 'Potency', 'Macc')
 
     -- Augmented gear definitions
     gear.Sucellos = {}
-    gear.Sucellos.Cures = { name = "Sucellos's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','MND+10','"Cure" potency +10',} }
-    gear.Sucellos.Nuke = { name = "Sucellos's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',} }
-    gear.Sucellos.STP = { name = "Sucellos's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Store TP"+10','Phys. dmg. taken-10%',} }
-    gear.Sucellos.WSD = { name = "Sucellos's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',} }
-    gear.Sucellos.ElementalWS = { name = "Sucellos's Cape", augments = { 'MND+20','Mag. Acc+20 /Mag. Dmg.+20','MND+10','Weapon skill damage +10%',} }
 
     gear.ChironicHose = {}
-    gear.ChironicHose.Macc = { name = "Chironic Hose", augments={'Mag. Acc.+28','Enmity-5','INT+14',}}
-
-    -- Additional plugins
-    send_command('lua l xivparty')
 
     -- Additional local binds   
     send_command('bind f11 gs c cycle castingmode')
@@ -55,15 +46,15 @@ function job_setup()
     send_command('bind ^end input /ma "Blizzard IV" <t>')
     send_command('bind ^pagedown input /ma "Thunder IV" <t>')
 
-    send_command('bind !insert input /ma "Stone V" <t>')
-    send_command('bind !home input /ma "Water V" <t>')
-    send_command('bind !pageup input /ma "Aero V" <t>')
-    send_command('bind !delete input /ma "Fire V" <t>')
-    send_command('bind !end input /ma "Blizzard V" <t>')
-    send_command('bind !pagedown input /ma "Thunder V" <t>')
+    send_command('bind !insert input /ma "Stone VI" <t>')
+    send_command('bind !home input /ma "Water VI" <t>')
+    send_command('bind !pageup input /ma "Aero VI" <t>')
+    send_command('bind !delete input /ma "Fire VI" <t>')
+    send_command('bind !end input /ma "Blizzard VI" <t>')
+    send_command('bind !pagedown input /ma "Thunder VI" <t>')
 
     -- Buff tracking
-    state.Buff['Composure'] = buffactive['Composure'] or false
+    --state.Buff['Composure'] = buffactive['Composure'] or false
 
     select_default_macro_book()
 end
@@ -74,8 +65,6 @@ end
 
 -- Called when this job file is unloaded (eg: job change)
 function job_file_unload()
-    send_command('lua u xivparty')
-
     send_command('unbind f11')
     send_command('unbind ^insert')
     send_command('unbind ^home')
@@ -99,18 +88,18 @@ function init_gear_sets()
     --------------------------------------
 
     -- Precast sets to enhance JAs
-    sets.precast.JA.Chainspell = {
-        body="Vitiation Tabard +3",
-    }
 
     -- Fast cast sets for spells
     sets.precast.FC = {
-        main="Crocea Mors", -- 20
-        head="Lethargy Chappel +2", -- 14 cast time? Does it stack?
-        body="Vitiation Tabard +3", -- 16
+        main="Marin Staff +1", --3
+        head="Nahtirah Hat", -- 10
+        body="Shango Robe", -- 8
         hands="Volte Gloves", --6
-        legs="Ayanmo Cosciales +2", -- 6
-        right_ear="Lethargy Earring", -- 7
+        legs="Jhakri Slops +2", -- set bonus 1
+        feet="Jhakri Pigaches +2", -- set bonus 1
+        right_ear="Loquacious Earring", -- 2
+        left_ring="Kishar Ring", --4
+        right_ring="Jhakri Ring", --set bonus 1
         waist="Embla Sash", -- 5
     }
 
@@ -118,142 +107,73 @@ function init_gear_sets()
         main="Daybreak",
     })
 
-    sets.precast.FC.Regen = set_combine(sets.precast.FC, {
-        main="Bolelabunga",
-    })
-
     --------------------------------------
     -- Midcast sets
     --------------------------------------
 
+    -- Nuking sets
+
+    sets.midcast.BlackMagic = {
+        main="Marin Staff +1",
+        sub="Enki Strap",
+        ammo="Ghastly Tathlum +1",
+        head="Jhakri Coronal +2",
+        body="Jhakri Robe +2",
+        hands="Jhakri Cuffs +2",
+        legs="Jhakri Slops +2",
+        feet="Jhakri Pigaches +2",
+        neck="Sibyl Scarf",
+        waist="Acuity Belt +1",
+        left_ear="Malignance Earring",
+        right_ear="Wicce Earring",
+        left_ring="Metamorph Ring +1",
+        right_ring="Shiva Ring +1",
+        back="Bane Cape",
+    }
+    
+    sets.midcast.BlackMagic.MB = set_combine(sets.midcast.BlackMagic, {
+    })
+
+    sets.midcast.BlackMagic.Macc = set_combine(sets.midcast.BlackMagic, {
+        neck="Erra Pendant",
+    })
+
     -- Enfeebling sets
 
-    sets.midcast.Enfeebling_MND = {
-        main="Crocea Mors",
-        head="Vitiation Chapeau +3",
-        body="Lethargy Sayon +2",
-        hands="Lethargy Gantherots +2",
-        legs=gear.ChironicHose.Macc,
-        feet="Vitiation Boots +3",
-        neck="Duelist's Torque +1",
-        waist="Obstinate Sash",
-        left_ear="Snotra Earring",
-        right_ear="Malignance Earring",
-        left_ring="Metamorph Ring +1",
+    sets.midcast.Enfeebling_INT = set_combine(sets.midcast.BlackMagic, {
+        neck="Erra Pendant",
         right_ring="Kishar Ring",
-        back=gear.Sucellos.Cures,
-    }
+    })
 
-    sets.midcast.Enfeebling_MND.Macc = set_combine(sets.midcast.Enfeebling_MND, {
-        body="Atrophy Tabard +3",
-        right_ring="Regal Ring",
+    sets.midcast.Enfeebling_MND = set_combine(sets.midcast.Enfeebling_INT, {
     })
 
     sets.midcast.Cure = set_combine(sets.midcast.Enfeebling_MND, {
         main="Chatoyant Staff", --10% + weather bonus
         sub="Enki Strap",
-        head="Gendewitha Caubeen +1", --18%
-        hands={ name="Weath. Cuffs +1", augments={'MP+45',}}, --9%
-        legs="Atrophy Tights +2", --11%
-        feet="Lethargy Houseaux +3", -- -11 enmity
+        hands="Weath. Cuffs +1", --9%
     })
 
     sets.midcast.Curaga = sets.midcast.Cure   
     sets.midcast.SelfCure = set_combine(sets.midcast.Cure, { left_ring="Vocane Ring" })
-
-    sets.midcast.Enfeebling_INT = {
-        main="Crocea Mors",
-        ammo="Ghastly Tathlum +1",
-        head="Vitiation Chapeau +3",
-        body="Lethargy Sayon +2",
-        hands="Lethargy Gantherots +2",
-        legs=gear.ChironicHose.Macc,
-        feet="Vitiation Boots +3",
-        neck="Duelist's Torque +1",
-        waist="Acuity Belt +1",
-        left_ear="Snotra Earring",
-        right_ear="Malignance Earring",
-        left_ring="Metamorph Ring +1",
-        right_ring="Kishar Ring",
-        back=gear.Sucellos.Nuke,
-    }
-
-    sets.midcast.Enfeebling_INT.Potency = set_combine(sets.midcast.Enfeebling_INT, {
-        right_ring="Shiva Ring +1",
-    })
-
-    sets.midcast.Enfeebling_INT.Macc = set_combine(sets.midcast.Enfeebling_INT, {
-        body="Atrophy Tabard +3",
-        right_ring="Regal Ring",
-    })
     
     sets.midcast.Dispelga = set_combine(sets.midcast.Enfeebling_INT, {
         main="Daybreak",
     })
 
-    sets.midcast.BlackMagic = set_combine(sets.midcast.Enfeebling_INT, {
-        main="Marin Staff +1",
-        sub="Enki Strap",
-        head="Lethargy Chappel +2",
-        legs="Lethargy Fuseau +2",
-        neck="Sibyl Scarf",
-        left_ear="Hecate's Earring",
-        right_ear="Malignance Earring",
-        right_ring="Shiva Ring +1",
-    })
-
-    sets.midcast.BlackMagic.MB = set_combine(sets.midcast.BlackMagic, {
-        feet="Jhakri Pigaches +2",
-    })
-
-    sets.midcast.BlackMagic.Macc = set_combine(sets.midcast.BlackMagic, {
-        left_ear="Snotra Earring",
-    })
-
     sets.midcast['Enhancing Magic'] = {
-        body="Vitiation Tabard +3",
-        hands="Atrophy Gloves +3",
-        legs="Atrophy Tights +2",
-        feet="Lethargy Houseaux +3",
-        neck="Duelist's Torque +1",
         waist="Embla Sash",
-        right_ear="Lethargy Earring",
-        back="Ghostfyre Cape",
     }
-
-    sets.midcast.ComposureOther = set_combine(sets.midcast['Enhancing Magic'], {
-        head="Lethargy Chappel +2",
-        body="Lethargy Sayon +2",
-        legs="Lethargy Fuseau +2",
-    })
 
     sets.midcast.Regen = set_combine(sets.midcast['Enhancing Magic'], {
         main="Bolelabunga",
     })
 
-    sets.midcast.Refresh = set_combine(sets.midcast['Enhancing Magic'], {
-        body="Atrophy Tabard +3",
-        legs="Lethargy Fuseau +2",
-    })
-
-    sets.midcast.Enspell = set_combine(sets.midcast['Enhancing Magic'], {
-        hands="Vitiation Gloves +3",
-        Legs="Vitiation Tights +2",
-    })
-
-    sets.midcast.Temper = sets.midcast.Enspell
-
     sets.midcast.Stoneskin = set_combine(sets.midcast['Enhancing Magic'], {
-        hands="Vitiation Gloves +3",
         waist="Siegel Sash",
     })
 
-    sets.midcast.Gain = set_combine(sets.midcast['Enhancing Magic'], {
-        hands="Vitiation Gloves +3",
-    })
-
     sets.midcast.Spikes = set_combine(sets.midcast['Enhancing Magic'], {
-        legs="Vitiation Tights +2",
     })
 
     sets.midcast['Dark Magic'] = set_combine(sets.midcast.BlackMagic, {
@@ -268,32 +188,33 @@ function init_gear_sets()
     sets.resting = {
         main="Chatoyant Staff",
         sub="Enki Strap",
-        ammo="Homiliary",
-        head="Vitiation Chapeau +3",
-        body="Lethargy Sayon +2",
+        head="Nyame Helm",
+        body="Jhakri Robe +2",
         hands="Volte Gloves",
         legs="Nyame Flanchard",
         feet="Nyame Sollerets",
         neck="Sibyl Scarf",
         left_ring="Metamorph Ring +1",
         right_ring="Metamorph Ring",
-        back=gear.Sucellos.Cures,
+        back="Bane Cape",
     }
 
     sets.idle = { 
-        ammo="Homiliary",
-        head="Vitiation Chapeau +3",
-        body="Lethargy Sayon +2",
+        main="Bolelabunga",
+        sub="Culminus",
+        ammo="Ghastly Tathlum +1",
+        head="Nyame Helm",
+        body="Jhakri Robe +2",
         hands="Volte Gloves",
-        legs="Carmine Cuisses +1",
-        feet="Nyame Sollerets",
+        legs="Assid. Pants +1",
+        feet="Herald's Gaiters",
         neck="Sibyl Scarf",
-        waist="Sailfi Belt +1",
+        waist="Acuity Belt +1",
         left_ear="Influx Earring",
-        right_ear="Lethargy Earring",
+        right_ear="Wicce Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Vocane Ring",
-        back=gear.Sucellos.Cures,
+        back="Bane Cape",
     }
 
     --------------------------------------
@@ -302,64 +223,38 @@ function init_gear_sets()
 
     -- Normal melee group, max haste + DW + multiattack
     sets.engaged = {
-        ammo="Coiste Bodhar",
-        head="Malignance Chapeau",
-        --head="Blistering Sallet +1", --8%
-        body="Ayanmo Corazza +2", --4%
-        hands="Ayanmo Manopolas +2", --4%
-        legs="Malignance Tights", --9%
-        feet="Malignance Boots", -- STP 9
-        neck="Anu Torque",
-        waist="Sailfi Belt +1", --9%
-        --left_ear="Brutal Earring",
-        left_ear="Suppanomimi",
+        ammo="Oshasha's Treatise",
+        head="Blistering Sallet +1", --8
+        body="Nyame Mail", --3
+        hands="Nyame Gauntlets", --3 
+        legs="Jhakri Slops +2", --2
+        feet="Nyame Sollerets", --3
+        neck="Subtlety Spectacles",
+        waist="Eschan Stone",
+        left_ear="Brutal Earring",
         right_ear="Cessance Earring",
-        left_ring="Ilabrat Ring",
-        right_ring="Rajas Ring",
-        back=gear.Sucellos.STP,
+        left_ring="Rajas Ring",
+        right_ring="Vocane Ring",
+        back="Bane Cape",
     }
-
-    sets.engaged.Acc = set_combine(sets.engaged, {
-        neck="Sanctity Necklace",
-    })
 
     --------------------------------------
     -- Weapon sets
     --------------------------------------
 
-    sets.weapons.Sword = {
-        main="Crocea Mors",
-        sub="Beatific Shield +1",
-    }
-
-    sets.weapons.Savage = {
-        main="Naegling",
-        sub="Beatific Shield +1",
-    }
-
-    sets.weapons.DualSword = {
-        main="Crocea Mors",
-        sub="Tauret",
-    }
-
-    sets.weapons.Seraph = {
-        main="Crocea Mors",
-        sub="Daybreak",
-    }
-
     sets.weapons.Dagger = {
-        main="Tauret",
-        sub="Beatific Shield +1",
+        main="Ternion Dagger +1",
+        sub="Culminus",
     }
 
-    sets.weapons.DualDagger = {
-        main="Tauret",
-        sub="Crocea Mors",
+    sets.weapons.Staff = {
+        main="Malignance Pole",
+        sub="Enki Strap",
     }
 
     sets.weapons.Club = {
         main="Kaja Rod",
-        sub="Beatific Shield +1",
+        sub="Culminus",
     }
 
     --------------------------------------
@@ -369,55 +264,42 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Oshasha's Treatise",
-        head="Vitiation Chapeau +3", -- 6% WSD, 62 att
-        body="Vitiation Tabard +3",
-        hands="Jhakri Cuffs +2", --7% WSD, 43 att
-        legs="Lethargy Fuseau +2",
-        feet="Lethargy Houseaux +3", --12% WSD, 60 att
+        head="Nyame Helm", 
+        body="Nyame Mail",
+        hands="Jhakri Cuffs +2", 
+        legs="Nyame Flanchard",
+        feet="Nyame Sollerets",
         neck="Republican Platinum Medal",
-        waist="Sailfi Belt +1",
+        waist="Eschan Stone",
         left_ear="Brutal Earring",
         right_ear=gear.Moonshade,
-        left_ring="Ilabrat Ring",
-        right_ring="Rajas Ring",
-        back=gear.Sucellos.Cures,
+        left_ring="Rajas Ring",
+        right_ring="Metamorph Ring +1",
+        back="Bane Cape",
     }
 
     -- prefers DEX, crit rate, and fTP
-    sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
+    sets.precast.WS.Evisceration = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
-        feet="Ayanmo Gambieras +2",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
 
-    -- prefers DEX, crit rate, and fTP
-    sets.precast.WS['Evisceration'] = sets.precast.WS['Chant du Cygne']
-
     -- Magical WS
     sets.precast.WS.ElementalWS = set_combine(sets.midcast.BlackMagic, {
-        head="Vitiation Chapeau +3", -- 6% WSD, 62 att
         hands="Jhakri Cuffs +2", --7% WSD, 43 att
-        feet="Lethargy Houseaux +3", --12% WSD, 50 MAB, 60 att
         left_ear=gear.Moonshade,
-        back=gear.Sucellos.ElementalWS,
     })
 
-    sets.precast.WS["Seraph Blade"] = set_combine(sets.precast.WS.ElementalWS, {
-        waist="Eschan Stone",
-        back=gear.Sucellos.ElementalWS,
-    })
-
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.precast.WS.ElementalWS, {
+    sets.precast.WS.Cataclysm = set_combine(sets.precast.WS.ElementalWS, {
         head="Pixie Hairpin +1",
-        waist="Eschan Stone",
     })
 
     --------------------------------------
     -- Special sets (required by rules)
     --------------------------------------
 
-    sets.Kiting = { legs="Carmine Cuisses +1" }
+    sets.Kiting = { feet="Herald's Gaiters" }
 
     sets.Cursna = {
          waist="Gishdubar Sash",
@@ -437,14 +319,6 @@ function init_gear_sets()
         feet="Nyame Sollerets", --7%
         right_ring="Vocane Ring", --7%
     }
-
-    sets.defense.Hybrid = set_combine(sets.defense, {
-        head="Malignance Chapeau",
-        body="Lethargy Sayon +2",
-        hands="Malignance Gloves",
-        legs="Malignance Tights",
-        feet="Malignance Boots",
-    })
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -486,10 +360,6 @@ end
 
 -- Custom spell mapping, for when more than just the spell name matters (targets, buffs, etc.)
 function job_get_spell_map(spell, default_spell_map)
-    if spell.skill == 'Enhancing Magic' and spell.target.type ~= 'SELF' and state.Buff['Composure'] then
-        return 'ComposureOther'
-    end
-
     -- if spell.action_type == 'Magic' then
     --     if default_spell_map == 'Cure' or default_spell_map == 'Curaga' then
     --         if (world.weather_element == 'Light' or world.day_element == 'Light') then
@@ -502,14 +372,6 @@ function job_get_spell_map(spell, default_spell_map)
         return 'SelfCure'
     end
 end
-
--- function customize_idle_set(idleSet)
---     if player.hpp < 80 then
---         idleSet = set_combine(idleSet, sets.ExtraRegen)
---     end
-
---     return idleSet
--- end
 
 -- Called by the 'update' self-command.
 -- function job_update(cmdParams, eventArgs)

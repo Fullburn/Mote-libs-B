@@ -137,6 +137,39 @@ end
 -- Utility functions for changing spells and target types in an automatic manner.
 -------------------------------------------------------------------------------------------------------------------
 
+function downgrade_spell(spell, action, spellMap, eventArgs)
+    if spell.skill == "Elemental Magic" or spell.skill == "Enfeebling Magic" or spell.skill == "Dark Magic"
+        or spell.skill == "Healing Magic" or spell.skill == "Ninjutsu" then
+        local spell_recasts = windower.ffxi.get_spell_recasts()
+        if spell_recasts[spell.recast_id] > 0 or spell.mp_cost > player.mp then
+            eventArgs.cancel = true
+
+            local spellParts = spell.name:split(' ')
+            local newSpell = spellParts[1]
+
+            if #spellParts == 2 then
+                if (spellParts[2] == 'V') then
+                    newSpell = newSpell .. ' IV'
+                elseif (spellParts[2] == 'IV') then
+                    newSpell = newSpell .. ' III'
+                elseif (spellParts[2] == 'III') then
+                    newSpell = newSpell .. ' II'
+                elseif (spellParts[2] == 'San') then
+                    newSpell = newSpell .. ' Ni'
+                elseif (spellParts[2] == 'Ni') then
+                    newSpell = newSpell .. ' Ichi'
+                end
+            end
+            
+            if (newSpell ~= nil) then
+                send_command('@input /ma "'..newSpell..'" '..tostring(spell.target.raw))
+            else
+                add_to_chat(123,'Abort: Spell waiting on recast or MP cost.')
+            end
+        end
+    end
+end
+
 local waltz_tp_cost = {['Curing Waltz'] = 200, ['Curing Waltz II'] = 350, ['Curing Waltz III'] = 500, ['Curing Waltz IV'] = 650, ['Curing Waltz V'] = 800}
 
 -- Utility function for automatically adjusting the waltz spell being used to match HP needs and TP limits.

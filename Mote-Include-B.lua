@@ -937,6 +937,16 @@ function apply_kiting(baseSet)
     return baseSet
 end
 
+-- Function to add cursna gear on top of the base set if doomed.
+-- @param baseSet : The gear set that the cursna gear will be applied on top of.
+function apply_cursna(baseSet)
+    if sets.Cursna then
+        baseSet = set_combine(baseSet, sets.Cursna)
+    end
+
+    return baseSet
+end
+
 
 -------------------------------------------------------------------------------------------------------------------
 -- Utility functions for constructing default gear sets.

@@ -120,7 +120,6 @@ function init_gear_sets()
     --------------------------------------
 
     sets.idle = { 
-        ammo="Coiste Bodhar",
         head="Gleti's Mask",
         body="Gleti's Cuirass",
         hands="Gleti's Gauntlets",
@@ -143,14 +142,13 @@ function init_gear_sets()
     sets.engaged = {
         ammo="Coiste Bodhar",
         head="Skulker's Bonnet +2", --8%
-        body="Pillager's Vest +3", --4%
-        --body=gear.AdhemarJacket.Attack, --4%
+        body="Plunderer's Vest +3", --4%
         hands=gear.AdhemarWrists.Attack, --5%
         legs="Pillager's Culottes +3", --6%
-        feet="Plunderer's Poulaines +2",
+        feet="Plunderer's Poulaines +3", --4%
         neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
-        left_ear="Cessance Earring",
+        left_ear="Suppanomimi",
         right_ear="Skulker's Earring",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
@@ -159,6 +157,10 @@ function init_gear_sets()
 
     sets.engaged.Acc = set_combine(sets.engaged, {
         neck="Sanctity Necklace",
+    })
+
+    sets.engaged.DW = set_combine(sets.engaged, {
+        body=gear.AdhemarJacket.Attack,
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
@@ -207,19 +209,18 @@ function init_gear_sets()
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
-        ammo="Coiste Bodhar",
+        ammo="Oshasha's Treatise",
         head="Pillager's Bonnet +3",
         body="Skulker's Vest +2",
-        --body=gear.AdhemarJacket.Attack,
         hands=gear.AdhemarWrists.Attack,
         legs="Pillager's Culottes +3",
-        feet="Gleti's Boots",
+        feet="Plunderer's Poulaines +3",
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
         left_ear=gear.Moonshade,
         right_ear="Skulker's Earring",
-        left_ring="Epona's Ring",
-        right_ring="Ilabrat Ring",
+        left_ring="Ilabrat Ring",
+        right_ring="Regal Ring",
         back=gear.Toutatis.WSD,
     }
 
@@ -230,10 +231,15 @@ function init_gear_sets()
         hands="Pillager's Armlets +1",
     })
 
+    -- sets.precast.WS['Mandalic Stab'] = set_combine(sets.precast.WS, {
+    --     feet="Gleti's Boots",
+    -- })
+
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Evisceration'] = set_combine(sets.precast.WS, {
-        body="Gleti's Cuirass +2",
+        body="Plunderer's Vest +3",
         legs="Pillager's Culottes +3",
+        feet="Gleti's Boots",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -248,7 +254,8 @@ function init_gear_sets()
         neck="Sibyl Scarf",
         left_ear="Hecate's Earring",
         right_ear="Novio Earring",
-        left_ring="Beithir Ring",
+        left_ring="Metamorph Ring +1",
+        right_ring="Shiva Ring +1",
         waist="Eschan Stone",
         back=gear.Toutatis.WSD,
     })
@@ -258,12 +265,16 @@ function init_gear_sets()
     --------------------------------------
 
     sets.TreasureHunter = {
-        --head="White Rarab Cap +1",
         hands="Plunderer's Armlets +1", 
         feet="Skulker's Poulaines +2",
     }
 
     sets.Kiting = { feet="Skadi's Jambeaux +1" }
+
+    sets.Cursna = {
+        waist="Gishdubar Sash",
+        left_ring="Blenmot's Ring",
+    }
 
     -- buffactive sets for custom logic
     sets.custom = {}

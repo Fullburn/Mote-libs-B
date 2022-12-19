@@ -30,28 +30,43 @@ function job_setup()
     state.Buff['Chain Affinity'] = buffactive['chain affinity'] or false
     state.Buff['Burst Affinity'] = buffactive['burst affinity'] or false
     state.Buff['Efflux'] = buffactive['efflux'] or false
-    state.Buff['Diffusion'] = buffactive['efflux'] or false
+    state.Buff['Diffusion'] = buffactive['diffusion'] or false
+    state.Buff['Aftermath: Lv.3'] = buffactive["Aftermath: Lv.3"] or false
 
     -- Mode definitions
-    state.WeaponsMode:options('Sword', 'Club', 'Nuke', 'Tank', 'None')
-    state.OffenseMode:options('Normal', 'Acc', 'Subtle')
-    state.RangedMode:options('Normal', 'Acc')
+    state.WeaponsMode:options('Tizona', 'TizonaSak', 'Naegling', 'NaeglingSak', 'Club', 'TankMaybe', 'None')
+    state.OffenseMode:options('Normal', 'Acc1', 'Acc2', 'Subtle')
     state.WeaponskillMode:options('Normal', 'Acc')
-    state.DefenseMode:options('Hybrid', 'None')
+    state.DefenseMode:options('Hybrid', 'Tank', 'None')
     state.CastingMode:options('Normal', 'Acc1', 'Potency')
 
     -- Augmented gear definitions
     gear.Rosmerta = {}
     gear.Rosmerta.WSD = { name = "Rosmerta's Cape", augments = { 'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
-    gear.Rosmerta.DA = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','STR+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',}}
+    gear.Rosmerta.DA = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',}}
+    gear.Rosmerta.AM3 = { name = "Rosmerta's Cape", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Store TP"+10','Phys. dmg. taken-10%',}}
     gear.Rosmerta.MAB = { name="Rosmerta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10','Spell interruption rate down-10%',}}
-    gear.Rosmerta.Eva = { name="Rosmerta's Cape", augments={'AGI+20'}}-- Eva +45, MEva +20, FC +10%, (Counter +10 instead of 15 eva?)
+    gear.Rosmerta.MEva = { name="Rosmerta's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Mag. Evasion+10','"Fast Cast"+10','Mag. Evasion+15',}}
+
+    gear.HercFeet = {}
+    gear.HercFeet.FC = { name="Herculean Boots", augments={'STR+3','AGI+10','"Fast Cast"+7','Accuracy+12 Attack+12','Mag. Acc.+14 "Mag.Atk.Bns."+14',}}
+    gear.HercFeet.STP = { name="Herculean Boots", augments={'Mag. Acc.+9 "Mag.Atk.Bns."+9','CHR+6','"Store TP"+9','Accuracy+18 Attack+18',}}
 
     -- Additional local binds    
     send_command('bind f11 gs c cycle castingmode')
 
     select_default_macro_book()
 end
+
+    -- --AutoWS for Trials~
+    -- windower.raw_register_event(
+    --     'tp change',
+    --     function(new_tp, old_tp) 
+    --         if (new_tp >= 1000) then
+    --             windower.send_command('input /ws "Expiacion"')
+    --         end
+    --     end
+    -- )
 
 -------------------------------------------------------------------------------------------------------------------
 -- User setup functions for this job.  Recommend that these be overridden in a sidecar file.
@@ -66,24 +81,15 @@ end
 function init_gear_sets()
 --[[
 TODO gearsets!
-Fast Cast: 
-    Amalric Coif +1   -- 16m also gives Refresh Potency!!!
-    Rosmerta's
-
-Defense mode full tank:
-    Rosmerta's
 
 Subtle Blow:
     Bathy Choker +1
     Expeditious Pinion
     Adhemar Bonnet +1
 
-Cursna received set:
-
 General:
     Stikini +1 (x1)
     Mirage Stole +2
-    Pixie Hairpin +1
     Hachirin no Obi
     Aurist's Cape +1
 --]]
@@ -94,22 +100,17 @@ General:
 
     sets.idle = { 
         head="Gleti's Mask",
-        body="Hashishin Mintan +2",
+        body="Mekosuchinae harness",
         hands="Gleti's Gauntlets",
         legs="Carmine Cuisses +1",
         feet="Gleti's Boots",
         neck="Sibyl Scarf",
         waist="Sailfi Belt +1",
-        left_ear="Brutal Earring",
-        right_ear="Suppanomimi",
+        left_ear="Suppanomimi",
+        right_ear="Cessance Earring",
         left_ring="Epona's Ring",
         right_ring="Rajas Ring",
         back=gear.Rosmerta.DA,
-    }
-
-    sets.TreasureHunter = {
-        head="White Rarab Cap +1",
-        ammo="Perfect Lucky Egg", 
     }
 
     --------------------------------------
@@ -118,28 +119,29 @@ General:
 
     -- Normal melee group, max haste + DW + multiattack + crit + attack
     sets.engaged = {
+        range="",
         ammo="Coiste Bodhar",
         head="Malignance Chapeau", --6%
-        --head="Blistering Sallet +1", --8%
         body=gear.AdhemarJacket.Attack, --4%
         hands=gear.AdhemarWrists.Attack, --5%
         legs="Samnuha Tights", --6% / STP 7, DA 3, TA 3
         feet="Malignance Boots", --3%
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1", --9%
-        left_ear="Cessance Earring",
-        right_ear="Suppanomimi",
+        left_ear="Suppanomimi",
+        right_ear="Cessance Earring",
         left_ring="Epona's Ring",
         right_ring="Ilabrat Ring",
         back=gear.Rosmerta.DA,
     }
 
     sets.engaged.Acc1 = set_combine(sets.engaged, {
-        head="Hashishin Kavuk +2",
-        body="Ayanmo Corazza +2", 
+        head="Hashishin Kavuk +3",
+        right_ear="Hashishin Earring +1",
     })
 
     sets.engaged.Acc2 = set_combine(sets.engaged.Acc1, {
+        range="",
         ammo="Falcon Eye",
     })
 
@@ -151,29 +153,43 @@ General:
         head="Volte Tiara", --6
         hands="Luhlaza Bazubands +1", --9
         right_ring="Rajas Ring", --5
-        feet="Volte Spats" --9
+        feet="Volte Spats" --6
     })
+
+    sets.buff.AM3 = {
+        back=gear.Rosmerta.AM3
+    }
 
     --------------------------------------
     -- Weapon sets
     --------------------------------------
 
-    sets.weapons.Sword = {
+    sets.weapons.Tizona = {
+        main="Tizona",
+        sub="Thibron",
+    }
+
+    sets.weapons.TizonaSak = {
+        main="Tizona",
+        sub="Sakpata's Sword",
+    }
+
+    sets.weapons.Naegling = {
         main="Naegling",
         sub="Thibron",
     }
 
-    sets.weapons.Club = {
-        main="Kaja Rod",
-        sub="Daybreak",
-    }
-
-    sets.weapons.Nuke = {
+    sets.weapons.NaeglingSak = {
         main="Naegling",
         sub="Sakpata's Sword",
     }
 
-    sets.weapons.Tank = {
+    sets.weapons.Club = {
+        main="Maxentius",
+        sub="Daybreak",
+    }
+
+    sets.weapons.TankMaybe = {
         main="Sakpata's Sword",
         sub="Culminus",
     }
@@ -184,26 +200,31 @@ General:
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
+        range="",
         ammo="Oshasha's Treatise",
-        head="Hashishin Kavuk +2",
+        head="Hashishin Kavuk +3",
         body="Assim. Jubbah +3",
         hands="Jhakri Cuffs +2",
         legs="Luhlaza Shalwar +3",
-        feet="Luhlaza Charuqs +2",
+        feet="Luhlaza Charuqs +3",
         neck="Republican Platinum Medal",
         waist="Sailfi Belt +1",
-        left_ear="Brutal Earring",
-        right_ear=gear.Moonshade,
+        left_ear=gear.Moonshade,
+        right_ear="Hashishin Earring +1",
         left_ring="Epona's Ring",
         right_ring="Beithir Ring",
         back=gear.Rosmerta.WSD,
     }
 
+    sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
+        left_ring="Sroda Ring",
+    })
+
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
         hands=gear.AdhemarWrists.Attack,
-        feet="Ayanmo Gambieras +2",
+        feet="Gleti's Boots",
         neck="Fotia Gorget",
         waist="Fotia Belt",
     })
@@ -219,16 +240,22 @@ General:
         hands="Nyame Gauntlets", --7%
         legs="Nyame Flanchard", --8%
         feet="Nyame Sollerets", --7%
-        neck="Unmoving Collar +1",
-        right_ring="Vocane Ring",
-        back=gear.Rosmerta.DA
+        back=gear.Rosmerta.DA,
     }
 
-    sets.defense.Hybrid = set_combine(sets.defense, {
+    sets.defense.Hybrid = {
         head="Malignance Chapeau",
+        body="Nyame Mail", --9%
         hands="Malignance Gloves",
         legs="Malignance Tights",
         feet="Malignance Boots",
+        back=gear.Rosmerta.DA, --10%
+    }
+
+    sets.defense.Tank = set_combine(sets.defense, {
+        neck="Unmoving Collar +1",
+        right_ring="Vocane Ring", --7%
+        back=gear.Rosmerta.MEva,
     })
 
     --------------------------------------
@@ -238,14 +265,17 @@ General:
     -- Precast sets to enhance JAs
     sets.precast.JA['Azure Lore'] = { }
 
-    -- Fast cast sets for spells - 15 from Erratic Flutter + JP gifts, 10 from Sakpata's
+    -- Fast cast sets for spells - 15 from Erratic Flutter + JP gifts
     sets.precast.FC = {
+        main="Sakpata's Sword", --10
+        head="Carmine Mask +1", --14
         body="Hashishin Mintan +2", -- 15
         hands="Hashishin Bazubands +2", -- (recast bonus if not replaced midcast)
         legs="Ayanmo Cosciales +2", -- 6
-        feet="Herculean Boots", -- 7
+        feet=gear.HercFeet.FC, -- 7
         right_ring="Kishar Ring", -- 4
         right_ear="Loquacious Earring", -- 2
+        back=gear.Rosmerta.MEva, --10
     }
 
     sets.precast.FC.Utsusemi = set_combine(sets.precast.FC, { neck="Magoraga Beads" })
@@ -255,7 +285,7 @@ General:
     --------------------------------------
 
     sets.buff.ChainAffinity = {
-        head="Hashishin Kavuk +2",
+        head="Hashishin Kavuk +3",
         feet="Assimilator's Charuqs +2",
     }
 
@@ -264,11 +294,11 @@ General:
     }
 
     sets.buff.BurstAffinity = {
-        feet="Hashishin Basmak +2",
+        feet="Hashishin Basmak +3",
     }
 
     sets.buff.Diffusion = {
-        feet="Luhlaza Charuqs +2",
+        feet="Luhlaza Charuqs +3",
     }
 
     sets.midcast.Blue_Physical_STR = set_combine(sets.precast.WS, {
@@ -283,29 +313,31 @@ General:
 
     sets.midcast.Blue_Stun = {
         --ammo = "Pemphredo Tathlum",
-        head="Hashishin Kavuk +2",
+        head="Hashishin Kavuk +3",
         body="Luhlaza Jubbah +3",
         hands="Hashishin Bazubands +2",
         legs="Hashishin Tayt +2",
-        feet="Luhlaza Charuqs +2",
+        feet="Luhlaza Charuqs +3",
         neck="Sanctity Necklace",
         waist="Acuity Belt +1",
         left_ear = "Hermetic Earring",
+        right_ear="Hashishin Earring +1",
         left_ring="Metamorph Ring +1",
         back=gear.Rosmerta.MAB,
     }
 
     sets.midcast.Blue_Magical_INTMAB = {
-        ammo="Ghastly Tathlum +1",
-        head="Hashishin Kavuk +2",
+        range="",
+        ammo="Sroda Tathlum",
+        head="Hashishin Kavuk +3",
         body="Hashishin Mintan +2",
         hands="Hashishin Bazubands +2",
         legs="Hashishin Tayt +2",
-        feet="Hashishin Basmak +2",
+        feet="Hashishin Basmak +3",
         neck="Sibyl Scarf",
         waist="Acuity Belt +1",
         left_ear="Hecate's Earring",
-        right_ear="Novio Earring",
+        right_ear="Hashishin Earring +1",
         left_ring="Metamorph Ring +1",
         right_ring="Shiva Ring +1",
         back=gear.Rosmerta.MAB,
@@ -327,25 +359,34 @@ General:
 
     sets.midcast.Blue_Cure = {
         main="Daybreak",
-        head="Hashishin Kavuk +2",
+        head="Hashishin Kavuk +3",
         body="Ayanmo Corazza +2",
         hands="Weath. Cuffs +1",
         legs="Hashishin Tayt +2",
-        feet="Hashishin Basmak +2",
-        left_ear="Influx Earring",
+        feet="Hashishin Basmak +3",
+        left_ear="Stun Earring",
         left_ring="Metamorph Ring +1",
-        right_ring="Naji's Loop",
     }
 
-    sets.midcast.Blue_SelfCure = set_combine(sets.midcast.Blue_Cure, { left_ring="Vocane Ring" })
+    sets.midcast.Blue_SelfCure = set_combine(sets.midcast.Blue_Cure, {
+        left_ring="Vocane Ring",
+
+    })
+
     sets.midcast.Cure = set_combine(sets.midcast.Blue_Cure, {})
 
     sets.midcast.Blue_Skill = {
+        range="",
         ammo="Mavi Tathlum",
-        head="Luhlaza Keffiyeh +2",
+        head="Luhlaza Keffiyeh +3",
         body="Assim. Jubbah +3",
         legs="Hashishin Tayt +2",
-        feet="Luhlaza Charuqs +2",
+        feet="Luhlaza Charuqs +3",
+        right_ear="Hashishin Earring +1",
+    }
+
+    sets.midcast.BatteryCharge = {
+        waist="Gishdubar Sash",
     }
 
     sets.midcast.Occultation = set_combine(sets.midcast.Blue_Skill, {
@@ -370,9 +411,19 @@ General:
     sets.Kiting = { legs="Carmine Cuisses +1" }
 
     sets.Cursna = {
+        neck="Nicander's Necklace",
         waist="Gishdubar Sash",
         left_ring="Blenmot's Ring",
     }
+
+    sets.TreasureHunter = {
+        range="",
+        ammo="Perfect Lucky Egg",
+        head="White Rarab Cap +1",
+        feet="Volte Boots",
+        waist="Chaac Belt",
+    }
+    
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -421,11 +472,19 @@ end
 -- Called when a player gains or loses a buff.
 -- buff == buff gained or lost
 -- gain == true if the buff was gained, false if it was lost.
--- function job_buff_change(buff, gain)
---     if not midaction() then
---         handle_equipping_gear(player.status)
---     end
--- end
+function job_buff_change(buff, gain)
+    if buff == "Aftermath: Lv.3" or state.Buff['Aftermath: Lv.3'] then
+        handle_equipping_gear(player.status)
+    end
+end
+
+function customize_melee_set(meleeSet)
+    if state.Buff['Aftermath: Lv.3'] then
+        meleeSet = set_combine(meleeSet, sets.buff.AM3)
+    end
+
+    return meleeSet
+end
 
 -------------------------------------------------------------------------------------------------------------------
 -- User code that supplements standard library decisions.

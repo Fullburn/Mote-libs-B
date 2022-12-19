@@ -30,21 +30,22 @@ function job_setup()
     state.OffenseMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'Acc')
     state.DefenseMode:options('None')
-    state.CastingMode:options('Normal', 'MB', 'Potency', 'Macc')
+    state.CastingMode:options('Conserve', 'Normal', 'MB', 'Macc')
 
     -- Augmented gear definitions
-    gear.Sucellos = {}
+    gear.Taranus = {}
+    gear.Taranus.Nuke = { name = "Taranus's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',} }
 
     gear.ChironicHose = {}
 
     -- Additional local binds   
     send_command('bind f11 gs c cycle castingmode')
-    send_command('bind ^insert input /ma "Stone IV" <t>')
-    send_command('bind ^home input /ma "Water IV" <t>')
-    send_command('bind ^pageup input /ma "Aero IV" <t>')
-    send_command('bind ^delete input /ma "Fire IV" <t>')
-    send_command('bind ^end input /ma "Blizzard IV" <t>')
-    send_command('bind ^pagedown input /ma "Thunder IV" <t>')
+    send_command('bind ^insert input /ma "Stone III" <t>')
+    send_command('bind ^home input /ma "Water III" <t>')
+    send_command('bind ^pageup input /ma "Aero III" <t>')
+    send_command('bind ^delete input /ma "Fire III" <t>')
+    send_command('bind ^end input /ma "Blizzard III" <t>')
+    send_command('bind ^pagedown input /ma "Thunder III" <t>')
 
     send_command('bind !insert input /ma "Stone VI" <t>')
     send_command('bind !home input /ma "Water VI" <t>')
@@ -96,7 +97,8 @@ function init_gear_sets()
         body="Shango Robe", -- 8
         hands="Volte Gloves", --6
         legs="Jhakri Slops +2", -- set bonus 1
-        feet="Jhakri Pigaches +2", -- set bonus 1
+        feet="Navon Crackows", -- 5
+        left_ear="Malignance Earring", -- 4
         right_ear="Loquacious Earring", -- 2
         left_ring="Kishar Ring", --4
         right_ring="Jhakri Ring", --set bonus 1
@@ -116,22 +118,30 @@ function init_gear_sets()
     sets.midcast.BlackMagic = {
         main="Marin Staff +1",
         sub="Enki Strap",
-        ammo="Ghastly Tathlum +1",
-        head="Jhakri Coronal +2",
-        body="Jhakri Robe +2",
-        hands="Jhakri Cuffs +2",
-        legs="Jhakri Slops +2",
-        feet="Jhakri Pigaches +2",
+        range="",
+        ammo="Sroda Tathlum",
+        head="Wicce Petasos +2",
+        body="Wicce Coat +2",
+        hands="Wicce Gloves +2",
+        legs="Wicce Chausses +2",
+        feet="Wicce Sabots +2",
         neck="Sibyl Scarf",
         waist="Acuity Belt +1",
         left_ear="Malignance Earring",
         right_ear="Wicce Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Shiva Ring +1",
-        back="Bane Cape",
+        back=gear.Taranus.Nuke,
     }
+
+    sets.midcast.BlackMagic.Conserve = set_combine(sets.midcast.BlackMagic, {
+        body="Spaekona's Coat +2",
+    })
     
     sets.midcast.BlackMagic.MB = set_combine(sets.midcast.BlackMagic, {
+        range="",
+        ammo="Ghastly Tathlum +1",
+        feet="Jhakri Pigaches +2",
     })
 
     sets.midcast.BlackMagic.Macc = set_combine(sets.midcast.BlackMagic, {
@@ -162,6 +172,7 @@ function init_gear_sets()
     })
 
     sets.midcast['Enhancing Magic'] = {
+        head="Befouled Crown",
         waist="Embla Sash",
     }
 
@@ -188,23 +199,24 @@ function init_gear_sets()
     sets.resting = {
         main="Chatoyant Staff",
         sub="Enki Strap",
-        head="Nyame Helm",
-        body="Jhakri Robe +2",
+        head="Befouled Crown",
+        body="Wicce Coat +2",
         hands="Volte Gloves",
         legs="Nyame Flanchard",
         feet="Nyame Sollerets",
         neck="Sibyl Scarf",
         left_ring="Metamorph Ring +1",
         right_ring="Metamorph Ring",
-        back="Bane Cape",
+        back=gear.Taranus.Nuke,
     }
 
     sets.idle = { 
         main="Bolelabunga",
         sub="Culminus",
-        ammo="Ghastly Tathlum +1",
-        head="Nyame Helm",
-        body="Jhakri Robe +2",
+        range="",
+        ammo="Sroda Tathlum",
+        head="Befouled Crown",
+        body="Wicce Coat +2",
         hands="Volte Gloves",
         legs="Assid. Pants +1",
         feet="Herald's Gaiters",
@@ -214,7 +226,7 @@ function init_gear_sets()
         right_ear="Wicce Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Vocane Ring",
-        back="Bane Cape",
+        back=gear.Taranus.Nuke,
     }
 
     --------------------------------------
@@ -223,19 +235,20 @@ function init_gear_sets()
 
     -- Normal melee group, max haste + DW + multiattack
     sets.engaged = {
+        range="",
         ammo="Oshasha's Treatise",
         head="Blistering Sallet +1", --8
-        body="Nyame Mail", --3
-        hands="Nyame Gauntlets", --3 
-        legs="Jhakri Slops +2", --2
-        feet="Nyame Sollerets", --3
+        body="Wicce Coat +2", --3
+        hands="Wicce Gloves +2", --3 
+        legs="Wicce Chausses +2", --5
+        feet="Wicce Sabots +2", --3
         neck="Subtlety Spectacles",
         waist="Eschan Stone",
         left_ear="Brutal Earring",
         right_ear="Cessance Earring",
         left_ring="Rajas Ring",
         right_ring="Vocane Ring",
-        back="Bane Cape",
+        back=gear.Taranus.Nuke,
     }
 
     --------------------------------------
@@ -263,8 +276,9 @@ function init_gear_sets()
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
+        range="",
         ammo="Oshasha's Treatise",
-        head="Nyame Helm", 
+        head="Blistering Sallet +1", 
         body="Nyame Mail",
         hands="Jhakri Cuffs +2", 
         legs="Nyame Flanchard",
@@ -275,7 +289,7 @@ function init_gear_sets()
         right_ear=gear.Moonshade,
         left_ring="Rajas Ring",
         right_ring="Metamorph Ring +1",
-        back="Bane Cape",
+        back=gear.Taranus.Nuke,
     }
 
     -- prefers DEX, crit rate, and fTP
@@ -302,8 +316,17 @@ function init_gear_sets()
     sets.Kiting = { feet="Herald's Gaiters" }
 
     sets.Cursna = {
-         waist="Gishdubar Sash",
-         left_ring="Blenmot's Ring",
+        neck="Nicander's Necklace",
+        waist="Gishdubar Sash",
+        left_ring="Blenmot's Ring",
+    }
+
+    sets.TreasureHunter = {
+        range="",
+        ammo="Perfect Lucky Egg",
+        head="White Rarab Cap +1",
+        feet="Volte Boots",
+        waist="Chaac Belt",
     }
 
     --------------------------------------
@@ -316,9 +339,15 @@ function init_gear_sets()
         body="Nyame Mail", --9%
         hands="Nyame Gauntlets", --7%
         legs="Nyame Flanchard", --8%
-        feet="Nyame Sollerets", --7%
+        feet="Wicce Sabots +2", --10%
         right_ring="Vocane Ring", --7%
+        back=gear.Taranus.Nuke,
     }
+
+    sets.defense.Hybrid = set_combine(sets.defense, {
+        body="Wicce Coat +2",
+        hands="Wicce Gloves +2",
+    })
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -380,13 +409,13 @@ end
 -- Function to display the current relevant user state when doing an update.
 -- Return true if display was handled, and you don't want the default info shown.
 function display_current_job_state(eventArgs)
-    local msg = 'Melee'
+    msg = ''
     
-    if state.CombatForm.has_value then
-        msg = msg .. ' (' .. state.CombatForm.value .. ')'
+    if state.CastingMode.value ~= 'None' then
+        msg = 'Casting: ' .. state.CastingMode.value
     end
     
-    msg = msg .. ': '
+    msg = msg .. ', Offense: '
     
     msg = msg .. state.OffenseMode.value
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
@@ -419,13 +448,13 @@ end
 -- Select default macro book on initial load or subjob change.
 function select_default_macro_book()
     -- Default macro set/book
-    if player.sub_job == 'WHM' then
-        set_macro_page(1, 1)
-    elseif player.sub_job == 'BLM' then
-        set_macro_page(1, 1)
+    if player.sub_job == 'RDM' then
+        set_macro_page(1, 2)
+    elseif player.sub_job == 'BLU' then
+        set_macro_page(1, 2)
     elseif player.sub_job == 'NIN' then
-        set_macro_page(1, 1)
+        set_macro_page(1, 2)
     else
-        set_macro_page(1, 1)
+        set_macro_page(1, 2)
     end
 end

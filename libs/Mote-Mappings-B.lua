@@ -316,7 +316,7 @@ spell_maps = {
     ['ElementalBreath'] = S{'Flame Breath', 'Frost Breath', 'Sand Breath', 'Hydro Breath', 'Gust Breath', 'Lightning Breath'},
 
     -- Elemental WS
-    ['ElementalWS'] = S{'Burning Blade', 'Red Lotus Blade', 'Shining Blade', 'Seraph Blade', 'Sanguine Blade', 'Aeolian Edge'},
+    ['ElementalWS'] = S{'Burning Blade', 'Red Lotus Blade', 'Shining Blade', 'Seraph Blade', 'Sanguine Blade', 'Gust Slash', 'Cyclone', 'Energy Steal', 'Energy Drain', 'Aeolian Edge'},
 }
 
 no_skill_spells_list = S{'Haste', 'Refresh', 'Regen', 'Protect', 'Protectra', 'Shell', 'Shellra',

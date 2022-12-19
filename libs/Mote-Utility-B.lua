@@ -148,7 +148,9 @@ function downgrade_spell(spell, action, spellMap, eventArgs)
             local newSpell = spellParts[1]
 
             if #spellParts == 2 then
-                if (spellParts[2] == 'V') then
+                if (spellParts[2] == 'VI') then
+                    newSpell = newSpell .. ' V'
+                elseif (spellParts[2] == 'V') then
                     newSpell = newSpell .. ' IV'
                 elseif (spellParts[2] == 'IV') then
                     newSpell = newSpell .. ' III'
@@ -161,7 +163,7 @@ function downgrade_spell(spell, action, spellMap, eventArgs)
                 end
             end
             
-            if (newSpell ~= nil) then
+            if (newSpell ~= nil and newSpell ~= spell.name) then
                 send_command('@input /ma "'..newSpell..'" '..tostring(spell.target.raw))
             else
                 add_to_chat(123,'Abort: Spell waiting on recast or MP cost.')

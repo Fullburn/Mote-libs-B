@@ -62,8 +62,16 @@ function job_setup()
     send_command('bind !end input /ma "Blizzard V" <t>')
     send_command('bind !pagedown input /ma "Thunder V" <t>')
 
+    send_command('bind ~insert input /ma "Barstonra" <me>')
+    send_command('bind ~home input /ma "Barwatera" <me>')
+    send_command('bind ~pageup input /ma "Baraera" <me>')
+    send_command('bind ~delete input /ma "Barfira" <me>')
+    send_command('bind ~end input /ma "Barblizzara" <me>')
+    send_command('bind ~pagedown input /ma "Barthundra" <me>')
+
     -- Buff tracking
     state.Buff['Composure'] = buffactive['Composure'] or false
+    state.Buff['Saboteur'] = buffactive['Saboteur'] or false
 
     select_default_macro_book()
 end
@@ -90,6 +98,13 @@ function job_file_unload()
     send_command('unbind !delete')
     send_command('unbind !end')
     send_command('unbind !pgdn')
+
+    send_command('unbind ~insert')
+    send_command('unbind ~home')
+    send_command('unbind ~pgup')
+    send_command('unbind ~delete')
+    send_command('unbind ~end')
+    send_command('unbind ~pgdn')
 end
 
 -- Define sets and vars used by this job file.
@@ -110,6 +125,7 @@ function init_gear_sets()
         body="Vitiation Tabard +3", -- 16
         hands="Volte Gloves", --6
         legs="Ayanmo Cosciales +2", -- 6
+        left_ear="Malignance Earring", -- 4
         right_ear="Lethargy Earring", -- 7
         waist="Embla Sash", -- 5
     }
@@ -130,6 +146,7 @@ function init_gear_sets()
 
     sets.midcast.Enfeebling_MND = {
         main="Crocea Mors",
+        sub="Culminus",
         head="Vitiation Chapeau +3",
         body="Lethargy Sayon +2",
         hands="Lethargy Gantherots +2",
@@ -137,8 +154,8 @@ function init_gear_sets()
         feet="Vitiation Boots +3",
         neck="Duelist's Torque +1",
         waist="Obstinate Sash",
-        left_ear="Snotra Earring",
-        right_ear="Malignance Earring",
+        left_ear="Malignance Earring",
+        right_ear="Snotra Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Kishar Ring",
         back=gear.Sucellos.Cures,
@@ -163,6 +180,8 @@ function init_gear_sets()
 
     sets.midcast.Enfeebling_INT = {
         main="Crocea Mors",
+        sub="Culminus",
+        range="",
         ammo="Ghastly Tathlum +1",
         head="Vitiation Chapeau +3",
         body="Lethargy Sayon +2",
@@ -171,8 +190,8 @@ function init_gear_sets()
         feet="Vitiation Boots +3",
         neck="Duelist's Torque +1",
         waist="Acuity Belt +1",
-        left_ear="Snotra Earring",
-        right_ear="Malignance Earring",
+        left_ear="Malignance Earring",
+        right_ear="Snotra Earring",
         left_ring="Metamorph Ring +1",
         right_ring="Kishar Ring",
         back=gear.Sucellos.Nuke,
@@ -194,11 +213,13 @@ function init_gear_sets()
     sets.midcast.BlackMagic = set_combine(sets.midcast.Enfeebling_INT, {
         main="Marin Staff +1",
         sub="Enki Strap",
+        range="",
+        ammo="Sroda Tathlum",
         head="Lethargy Chappel +2",
         legs="Lethargy Fuseau +2",
         neck="Sibyl Scarf",
-        left_ear="Hecate's Earring",
-        right_ear="Malignance Earring",
+        left_ear="Malignance Earring",
+        right_ear="Hecate's Earring",
         right_ring="Shiva Ring +1",
     })
 
@@ -211,6 +232,7 @@ function init_gear_sets()
     })
 
     sets.midcast['Enhancing Magic'] = {
+        head="Telchine Cap",
         body="Vitiation Tabard +3",
         hands="Atrophy Gloves +3",
         legs="Atrophy Tights +2",
@@ -229,6 +251,7 @@ function init_gear_sets()
 
     sets.midcast.Regen = set_combine(sets.midcast['Enhancing Magic'], {
         main="Bolelabunga",
+        legs="Telchine Braconi",
     })
 
     sets.midcast.Refresh = set_combine(sets.midcast['Enhancing Magic'], {
@@ -237,11 +260,13 @@ function init_gear_sets()
     })
 
     sets.midcast.Enspell = set_combine(sets.midcast['Enhancing Magic'], {
+        head="Befouled Crown",
         hands="Vitiation Gloves +3",
-        Legs="Vitiation Tights +2",
     })
 
-    sets.midcast.Temper = sets.midcast.Enspell
+    sets.midcast.Temper = set_combine(sets.midcast.Enspell, {
+        legs="Atrophy Tights +2",
+    })
 
     sets.midcast.Stoneskin = set_combine(sets.midcast['Enhancing Magic'], {
         hands="Vitiation Gloves +3",
@@ -253,7 +278,7 @@ function init_gear_sets()
     })
 
     sets.midcast.Spikes = set_combine(sets.midcast['Enhancing Magic'], {
-        legs="Vitiation Tights +2",
+        legs="Vitiation Tights +3",
     })
 
     sets.midcast['Dark Magic'] = set_combine(sets.midcast.BlackMagic, {
@@ -268,6 +293,7 @@ function init_gear_sets()
     sets.resting = {
         main="Chatoyant Staff",
         sub="Enki Strap",
+        range="",
         ammo="Homiliary",
         head="Vitiation Chapeau +3",
         body="Lethargy Sayon +2",
@@ -276,11 +302,12 @@ function init_gear_sets()
         feet="Nyame Sollerets",
         neck="Sibyl Scarf",
         left_ring="Metamorph Ring +1",
-        right_ring="Metamorph Ring",
+        right_ring="Mephitas's Ring +1",
         back=gear.Sucellos.Cures,
     }
 
     sets.idle = { 
+        range="",
         ammo="Homiliary",
         head="Vitiation Chapeau +3",
         body="Lethargy Sayon +2",
@@ -302,16 +329,16 @@ function init_gear_sets()
 
     -- Normal melee group, max haste + DW + multiattack
     sets.engaged = {
-        ammo="Coiste Bodhar",
+        range="",
+        ammo="Sroda Tathlum",
         head="Malignance Chapeau",
         --head="Blistering Sallet +1", --8%
         body="Ayanmo Corazza +2", --4%
         hands="Ayanmo Manopolas +2", --4%
-        legs="Malignance Tights", --9%
+        legs="Malignance Tights", --9% STP 10
         feet="Malignance Boots", -- STP 9
         neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
-        --left_ear="Brutal Earring",
         left_ear="Suppanomimi",
         right_ear="Cessance Earring",
         left_ring="Ilabrat Ring",
@@ -368,6 +395,7 @@ function init_gear_sets()
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
+        range="",
         ammo="Oshasha's Treatise",
         head="Vitiation Chapeau +3", -- 6% WSD, 62 att
         body="Vitiation Tabard +3",
@@ -383,6 +411,12 @@ function init_gear_sets()
         back=gear.Sucellos.Cures,
     }
 
+    sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
+        left_ear="Malignance Earring",
+        left_ring="Sroda Ring",
+        right_ring="Metamorph Ring +1",
+    })
+
     -- prefers DEX, crit rate, and fTP
     sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {
         head="Blistering Sallet +1",
@@ -396,21 +430,23 @@ function init_gear_sets()
 
     -- Magical WS
     sets.precast.WS.ElementalWS = set_combine(sets.midcast.BlackMagic, {
-        head="Vitiation Chapeau +3", -- 6% WSD, 62 att
-        hands="Jhakri Cuffs +2", --7% WSD, 43 att
-        feet="Lethargy Houseaux +3", --12% WSD, 50 MAB, 60 att
-        left_ear=gear.Moonshade,
+        head="Vitiation Chapeau +3", -- 6% WSD
+        hands="Jhakri Cuffs +2", --7% WSD
+        feet="Lethargy Houseaux +3", --12% WSD, 50 MAB
+        right_ear=gear.Moonshade,
         back=gear.Sucellos.ElementalWS,
     })
 
     sets.precast.WS["Seraph Blade"] = set_combine(sets.precast.WS.ElementalWS, {
         waist="Eschan Stone",
         back=gear.Sucellos.ElementalWS,
+        right_ring="Sroda Ring",
     })
 
     sets.precast.WS['Sanguine Blade'] = set_combine(sets.precast.WS.ElementalWS, {
         head="Pixie Hairpin +1",
         waist="Eschan Stone",
+        right_ring="Shiva Ring +1",
     })
 
     --------------------------------------
@@ -420,8 +456,17 @@ function init_gear_sets()
     sets.Kiting = { legs="Carmine Cuisses +1" }
 
     sets.Cursna = {
-         waist="Gishdubar Sash",
-         left_ring="Blenmot's Ring",
+        neck="Nicander's Necklace",
+        waist="Gishdubar Sash",
+        left_ring="Blenmot's Ring",
+    }
+
+    sets.TreasureHunter = {
+        range="",
+        ammo="Perfect Lucky Egg",
+        head="White Rarab Cap +1",
+        feet="Volte Boots",
+        waist="Chaac Belt",
     }
 
     --------------------------------------
@@ -528,6 +573,10 @@ function display_current_job_state(eventArgs)
     
     msg = msg .. state.OffenseMode.value
     msg = msg .. ', WS: ' .. state.WeaponskillMode.value
+
+    if state.CastingMode.value ~= 'None' then
+        msg = msg .. ', ' .. 'Magic: ' .. state.CastingMode.value
+    end
     
     if state.DefenseMode.value ~= 'None' then
         msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value

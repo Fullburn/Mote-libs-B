@@ -121,7 +121,8 @@ function init_gear_sets()
 
     sets.idle = { 
         head="Gleti's Mask",
-        body="Gleti's Cuirass",
+        body="Mekosuchinae harness",
+        --body="Gleti's Cuirass",
         hands="Gleti's Gauntlets",
         legs="Gleti's Breeches",
         feet="Skadi's Jambeaux +1",
@@ -144,7 +145,7 @@ function init_gear_sets()
         head="Skulker's Bonnet +2", --8%
         body="Plunderer's Vest +3", --4%
         hands=gear.AdhemarWrists.Attack, --5%
-        legs="Pillager's Culottes +3", --6%
+        legs="Samnuha Tights", -- 6%, 3 DA 3 TA 7 STP
         feet="Plunderer's Poulaines +3", --4%
         neck="Anu Torque",
         waist="Sailfi Belt +1", --9%
@@ -156,7 +157,7 @@ function init_gear_sets()
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
-        neck="Sanctity Necklace",
+        legs="Pillager's Culottes +3",
     })
 
     sets.engaged.DW = set_combine(sets.engaged, {
@@ -231,6 +232,10 @@ function init_gear_sets()
         hands="Pillager's Armlets +1",
     })
 
+    sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
+        left_ring="Sroda Ring",
+    })
+
     -- sets.precast.WS['Mandalic Stab'] = set_combine(sets.precast.WS, {
     --     feet="Gleti's Boots",
     -- })
@@ -267,11 +272,13 @@ function init_gear_sets()
     sets.TreasureHunter = {
         hands="Plunderer's Armlets +1", 
         feet="Skulker's Poulaines +2",
+        waist="Chaac Belt",
     }
 
     sets.Kiting = { feet="Skadi's Jambeaux +1" }
 
     sets.Cursna = {
+        neck="Nicander's Necklace",
         waist="Gishdubar Sash",
         left_ring="Blenmot's Ring",
     }

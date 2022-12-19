@@ -17,7 +17,7 @@ function job_setup()
     state.OffenseMode:options('Normal', 'PDL', 'Acc', 'Subtle')
     state.RangedMode:options('Normal', 'Acc')
     state.WeaponskillMode:options('Normal', 'PDL', 'Acc')
-    state.DefenseMode:options('Evasion', 'PDT')
+    state.DefenseMode:options('Hybrid', 'Normal')
     state.DefenseLevel:options('Off', 'On')
 
     -- Augmented gear definitions
@@ -147,9 +147,9 @@ function init_gear_sets()
     }
 
     sets.engaged.Acc = set_combine(sets.engaged, {
-        ammo="Falcon Eye",
-        body="Vishap Mail +3",
+        --body="Vishap Mail +1",
         right_ring="Regal Ring",
+        right_ear="Peltast's Earring +1",
     })
 
     sets.engaged.Subtle = set_combine(sets.engaged, {
@@ -158,7 +158,7 @@ function init_gear_sets()
         hands="Sulevia's Gauntlets +2",
         legs="Sulevia's Cuisses +2", -- set bonus
         feet="Volte Spats", --6
-        right_ear="Peltast's Earring", --5
+        right_ear="Peltast's Earring +1", --5
     })
 
     --------------------------------------
@@ -192,7 +192,7 @@ function init_gear_sets()
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
         ammo="Knobkierrie",
-        head="Peltast's Mezail +2",
+        head="Peltast's Mezail +3",
         body="Hjarrandi Breastplate", -- with Shining One ONLY
         hands="Pteroslaver Finger Gauntlets +3",
         legs="Vishap Brais +3",
@@ -201,23 +201,26 @@ function init_gear_sets()
         waist="Sailfi Belt +1",
         left_ear=gear.Moonshade,
         right_ear="Thrud Earring",
-        left_ring="Beithir Ring",
+        left_ring="Sroda Ring",
         right_ring="Regal Ring",
         back=gear.Brigantia.WSD,
     }
 
     sets.precast.WS.PDL = set_combine(sets.precast.WS, {
+        ammo="Crepuscular Pebble",
         body="Gleti's Cuirass",
-        right_ear="Peltast's Earring",
+        right_ear="Peltast's Earring +1",
     })
 
     sets.precast.WS["Savage Blade"] = set_combine(sets.precast.WS, {
         body="Gleti's Cuirass",
     })
 
-    sets.precast.WS["Camlann's Torment"] = set_combine(sets.precast.WS, {
+    -- has def reduction, so likes PDL
+    sets.precast.WS["Camlann's Torment"] = set_combine(sets.precast.WS.PDL, {
         neck="Fotia Gorget",
         waist="Fotia Belt",
+        left_ear="Thrud Earring",
     })
 
     -- prefers STR and fTP
@@ -243,8 +246,16 @@ function init_gear_sets()
     sets.Kiting = { legs="Carmine Cuisses +1" }
 
     sets.Cursna = {
+        neck="Nicander's Necklace",
         waist="Gishdubar Sash",
         left_ring="Blenmot's Ring",
+    }
+
+    sets.TreasureHunter = {
+        ammo="Perfect Lucky Egg",
+        head="White Rarab Cap +1",
+        feet="Volte Boots",
+        waist="Chaac Belt",
     }
 
     -- breath sets!
@@ -273,11 +284,21 @@ function init_gear_sets()
     --------------------------------------
     -- Defense sets
     --------------------------------------
-    
+
     -- Capped PDT and high eva/m.eva/hp/def
     sets.defense = {
         head="Nyame Helm", --7%
         body="Nyame Mail", --9%
+        hands="Nyame Gauntlets", --7%
+        legs="Nyame Flanchard", --8%
+        feet="Nyame Sollerets", --7%
+        left_ring="Vocane Ring",
+        back=gear.Brigantia.DA,
+    }
+
+    sets.defense.Hybrid = {
+        head="Hjarrandi Helm",
+        body="Hjarrandi Breastplate",
         hands="Nyame Gauntlets", --7%
         legs="Nyame Flanchard", --8%
         feet="Nyame Sollerets", --7%

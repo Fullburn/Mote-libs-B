@@ -99,9 +99,11 @@ end
 function unlock_TH()
     state.th_gear_is_locked = false
     local slots = T{}
+    
     for slot,item in pairs(sets.TreasureHunter) do
         slots:append(slot)
     end
+
     enable(slots)
     send_command('gs c update auto')
 end
@@ -120,7 +122,7 @@ function TH_for_first_hit(ignoreEngaged)
         else
             if _settings.debug_mode then add_to_chat(123,'Prepping for first hit on '..player.target.id..'.  Target has already been tagged.') end
         end
-    else
+    elseif state.th_gear_is_locked then
         unlock_TH()
     end
 end
